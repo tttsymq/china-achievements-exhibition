@@ -1,0 +1,26 @@
+<h2>数据从哪里来？</h2>
+<p class="subtitle">沙盘里展示的教育、医疗、经济数据，你希望怎么获取？</p>
+
+<div class="options">
+  <div class="option" data-choice="static" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>静态数据（推荐起步）</h3>
+      <p>把国家统计局等公开数据写死在前端 JSON 里。部署最简单，纯前端即可跑在 Vercel 上。后续可以升级成动态数据源。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="api" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>动态 API 接口</h3>
+      <p>对接真实数据源（如统计局 API、第三方数据平台），需要 Vercel Serverless Functions 或独立后端。数据实时更新但需要额外配置。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="manual" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>手动管理后台</h3>
+      <p>做一个简单的管理界面，老师/运营人员手动录入和更新数据。需要数据库 + 认证系统，复杂度较高。</p>
+    </div>
+  </div>
+</div>

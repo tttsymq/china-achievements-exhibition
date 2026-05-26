@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/Users/ydong/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/brainstorming/scripts/start-server.sh *)",
+      "Bash(scripts/stop-server.sh /Users/ydong/Desktop/demo/.superpowers/brainstorm/39176-1779763018/state)",
+      "Bash(python3 *)"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{"type":"server-started","port":50727,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:50727","screen_dir":"/Users/ydong/Desktop/demo/.superpowers/brainstorm/39176-1779763018/content","state_dir":"/Users/ydong/Desktop/demo/.superpowers/brainstorm/39176-1779763018/state"}
+{"type":"screen-added","file":"/Users/ydong/Desktop/demo/.superpowers/brainstorm/39176-1779763018/content/presentation-style.html"}
+{"source":"user-event","type":"click","text":"A\n    \n      3D 交互式沙盘\n      3D 地球/地图，可旋转缩放，点击城市/区域弹出对比面板（发达 vs 欠发达场景）。适合大屏展示，视觉冲击力强。","choice":"3d","id":null,"timestamp":1779763205354}
+{"source":"user-event","type":"click","text":"B\n    \n      双面对比仪表盘\n      左右分屏，左侧展示发达地区数据与3D场景，右侧同步展示偏远地区。通过滑块/时间轴控制对比维度（教育、医疗、基建等）。","choice":"split","id":null,"timestamp":1779763206306}
+{"source":"user-event","type":"click","text":"C\n    \n      故事化叙事滚动页\n      向下滚动逐步展开叙事，每个章节聚焦一个主题（基建、教育、医疗、科技），用数据可视化+图片+动画讲述两面性故事。","choice":"story","id":null,"timestamp":1779763206981}
+{"source":"user-event","type":"click","text":"B\n    \n      双面对比仪表盘\n      左右分屏，左侧展示发达地区数据与3D场景，右侧同步展示偏远地区。通过滑块/时间轴控制对比维度（教育、医疗、基建等）。","choice":"split","id":null,"timestamp":1779763207674}
+{"source":"user-event","type":"click","text":"A\n    \n      3D 交互式沙盘\n      3D 地球/地图，可旋转缩放，点击城市/区域弹出对比面板（发达 vs 欠发达场景）。适合大屏展示，视觉冲击力强。","choice":"3d","id":null,"timestamp":1779763208022}
+{"source":"user-event","type":"click","text":"B\n    \n      双面对比仪表盘\n      左右分屏，左侧展示发达地区数据与3D场景，右侧同步展示偏远地区。通过滑块/时间轴控制对比维度（教育、医疗、基建等）。","choice":"split","id":null,"timestamp":1779763208403}
+{"source":"user-event","type":"click","text":"C\n    \n      故事化叙事滚动页\n      向下滚动逐步展开叙事，每个章节聚焦一个主题（基建、教育、医疗、科技），用数据可视化+图片+动画讲述两面性故事。","choice":"story","id":null,"timestamp":1779763208708}
+{"source":"user-event","type":"click","text":"B\n    \n      双面对比仪表盘\n      左右分屏，左侧展示发达地区数据与3D场景，右侧同步展示偏远地区。通过滑块/时间轴控制对比维度（教育、医疗、基建等）。","choice":"split","id":null,"timestamp":1779763209037}
+{"source":"user-event","type":"click","text":"A\n    \n      3D 交互式沙盘\n      3D 地球/地图，可旋转缩放，点击城市/区域弹出对比面板（发达 vs 欠发达场景）。适合大屏展示，视觉冲击力强。","choice":"3d","id":null,"timestamp":1779763209294}
+{"source":"user-event","type":"click","text":"C\n    \n      故事化叙事滚动页\n      向下滚动逐步展开叙事，每个章节聚焦一个主题（基建、教育、医疗、科技），用数据可视化+图片+动画讲述两面性故事。","choice":"story","id":null,"timestamp":1779763209756}
+{"source":"user-event","type":"click","text":"B\n    \n      双面对比仪表盘\n      左右分屏，左侧展示发达地区数据与3D场景，右侧同步展示偏远地区。通过滑块/时间轴控制对比维度（教育、医疗、基建等）。","choice":"split","id":null,"timestamp":1779763210261}
+{"source":"user-event","type":"click","text":"A\n    \n      3D 交互式沙盘\n      3D 地球/地图，可旋转缩放，点击城市/区域弹出对比面板（发达 vs 欠发达场景）。适合大屏展示，视觉冲击力强。","choice":"3d","id":null,"timestamp":1779763210543}
+{"source":"user-event","type":"click","text":"C\n    \n      故事化叙事滚动页\n      向下滚动逐步展开叙事，每个章节聚焦一个主题（基建、教育、医疗、科技），用数据可视化+图片+动画讲述两面性故事。","choice":"story","id":null,"timestamp":1779763211208}
+{"source":"user-event","type":"click","text":"B\n    \n      双面对比仪表盘\n      左右分屏，左侧展示发达地区数据与3D场景，右侧同步展示偏远地区。通过滑块/时间轴控制对比维度（教育、医疗、基建等）。","choice":"split","id":null,"timestamp":1779763211541}
+{"source":"user-event","type":"click","text":"A\n    \n      3D 交互式沙盘\n      3D 地球/地图，可旋转缩放，点击城市/区域弹出对比面板（发达 vs 欠发达场景）。适合大屏展示，视觉冲击力强。","choice":"3d","id":null,"timestamp":1779763211820}
+{"source":"user-event","type":"click","text":"C\n    \n      故事化叙事滚动页\n      向下滚动逐步展开叙事，每个章节聚焦一个主题（基建、教育、医疗、科技），用数据可视化+图片+动画讲述两面性故事。","choice":"story","id":null,"timestamp":1779763212503}
+{"type":"screen-added","file":"/Users/ydong/Desktop/demo/.superpowers/brainstorm/39176-1779763018/content/data-source.html"}

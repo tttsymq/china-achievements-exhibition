@@ -1,749 +1,296 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>领跑世界的中国成就</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --red: #E60012;
-      --gold: #FFD700;
-      --dark: #1a1a2e;
-      --darker: #0f0f23;
-    }
-
-    body {
-      font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: var(--darker);
-      color: #fff;
-      overflow: hidden;
-      height: 100vh;
-      width: 100vw;
-    }
-
-    .page {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      transition: transform 0.5s ease, opacity 0.5s ease;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .page.hidden {
-      transform: translateX(100%);
-      opacity: 0;
-      pointer-events: none;
-    }
-    .page.slide-out {
-      transform: translateX(-30%);
-      opacity: 0.5;
-    }
-
-    /* === Cover Page === */
-    #cover {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1a0a0a 0%, #3d0c0c 40%, #1a1a2e 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    #cover::before {
-      content: '';
-      position: absolute;
-      top: -50%; left: -50%;
-      width: 200%; height: 200%;
-      background: radial-gradient(ellipse at 30% 20%, rgba(230,0,18,0.15) 0%, transparent 50%),
-                  radial-gradient(ellipse at 70% 80%, rgba(255,215,0,0.1) 0%, transparent 50%);
-      animation: pulse 8s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-
-    .cover-decoration {
-      position: absolute;
-      top: 40px; left: 0; right: 0;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      z-index: 1;
-    }
-    .cover-decoration .star {
-      color: var(--gold);
-      font-size: 14px;
-      opacity: 0.6;
-    }
-
-    .cover-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 0 30px;
-    }
-
-    .cover-badge {
-      display: inline-block;
-      padding: 6px 20px;
-      border: 1px solid rgba(255,215,0,0.4);
-      border-radius: 20px;
-      font-size: 12px;
-      color: var(--gold);
-      letter-spacing: 4px;
-      margin-bottom: 40px;
-      text-transform: uppercase;
-    }
-
-    .cover-title {
-      font-size: 36px;
-      font-weight: 800;
-      line-height: 1.3;
-      margin-bottom: 16px;
-      background: linear-gradient(180deg, #fff 0%, #ffcccc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .cover-subtitle {
-      font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      letter-spacing: 2px;
-      margin-bottom: 60px;
-    }
-
-    .cover-divider {
-      width: 60px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      margin: 0 auto 60px;
-    }
-
-    .cover-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 16px 48px;
-      background: linear-gradient(135deg, var(--red), #ff3344);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 8px 32px rgba(230,0,18,0.4);
-      transition: all 0.3s ease;
-      letter-spacing: 2px;
-    }
-    .cover-btn:active {
-      transform: scale(0.95);
-      box-shadow: 0 4px 16px rgba(230,0,18,0.3);
-    }
-    .cover-btn .arrow {
-      font-size: 20px;
-      animation: bounceRight 1.5s infinite;
-    }
-
-    @keyframes bounceRight {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(5px); }
-    }
-
-    .cover-footer {
-      position: absolute;
-      bottom: 40px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.3);
-      letter-spacing: 1px;
-    }
-
-    /* === Main Exhibition Page === */
-    #exhibition {
-      background: var(--darker);
-    }
-
-    .exhibition-header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: linear-gradient(180deg, var(--darker) 80%, transparent);
-      padding: 20px 20px 30px;
-    }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.7);
-      font-size: 14px;
-      cursor: pointer;
-      margin-bottom: 16px;
-      padding: 8px 0;
-    }
-    .back-btn:active { color: #fff; }
-
-    .section-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .section-desc {
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
-    }
-
-    /* Exhibit Cards */
-    .exhibit-list {
-      padding: 0 16px 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .exhibit-card {
-      background: linear-gradient(145deg, #1e1e3a, #252545);
-      border-radius: 16px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-    .exhibit-card:active { transform: scale(0.97); }
-
-    .exhibit-image {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      display: block;
-      background: linear-gradient(135deg, #2a2a4a, #1a1a3a);
-      position: relative;
-    }
-    .exhibit-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .exhibit-image-placeholder {
-      width: 100%;
-      height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-      position: relative;
-    }
-
-    .exhibit-tag {
-      position: absolute;
-      top: 12px; left: 12px;
-      padding: 4px 12px;
-      background: rgba(230,0,18,0.9);
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .exhibit-info {
-      padding: 16px;
-    }
-    .exhibit-name {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      line-height: 1.4;
-    }
-    .exhibit-brief {
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-      line-height: 1.6;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .exhibit-action {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 12px;
-      color: var(--gold);
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    /* QR Code Section */
-    .qr-section {
-      padding: 40px 20px 60px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .qr-card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 24px;
-      text-align: center;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      max-width: 260px;
-      width: 100%;
-    }
-
-    .qr-card-title {
-      font-size: 14px;
-      color: var(--dark);
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-
-    .qr-code {
-      width: 200px;
-      height: 200px;
-      margin: 0 auto;
-      background: #f5f5f5;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .qr-code canvas {
-      width: 180px;
-      height: 180px;
-    }
-
-    .qr-caption {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #666;
-    }
-
-    /* === Detail Page === */
-    .detail-page {
-      background: var(--darker);
-    }
-
-    .detail-header-img {
-      width: 100%;
-      height: 260px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 72px;
-      position: relative;
-    }
-    .detail-header-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .detail-back {
-      position: absolute;
-      top: 16px; left: 16px;
-      background: rgba(0,0,0,0.5);
-      border: none;
-      color: #fff;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .detail-content {
-      padding: 24px 20px 60px;
-    }
-
-    .detail-tag {
-      display: inline-block;
-      padding: 4px 14px;
-      background: rgba(230,0,18,0.2);
-      border: 1px solid rgba(230,0,18,0.3);
-      border-radius: 12px;
-      font-size: 12px;
-      color: var(--red);
-      margin-bottom: 12px;
-    }
-
-    .detail-title {
-      font-size: 22px;
-      font-weight: 700;
-      line-height: 1.4;
-      margin-bottom: 20px;
-    }
-
-    .detail-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background: linear-gradient(145deg, #1e1e3a, #252545);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-    }
-    .stat-value {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--gold);
-      margin-bottom: 4px;
-    }
-    .stat-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.5);
-    }
-
-    .detail-body {
-      font-size: 15px;
-      line-height: 1.8;
-      color: rgba(255,255,255,0.8);
-    }
-    .detail-body p {
-      margin-bottom: 16px;
-    }
-
-    .detail-divider {
-      width: 40px;
-      height: 2px;
-      background: linear-gradient(90deg, var(--red), transparent);
-      margin: 20px 0;
-    }
-
-    .detail-nav {
-      display: flex;
-      gap: 12px;
-      margin-top: 30px;
-    }
-    .detail-nav-btn {
-      flex: 1;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-    }
-    .detail-nav-btn:active {
-      background: rgba(255,255,255,0.1);
-    }
-    .detail-nav-btn .nav-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 4px;
-    }
-
-    /* Color themes for each exhibit */
-    .theme-sun { background: linear-gradient(135deg, #ff6b35, #f7c948); }
-    .theme-hydrogen { background: linear-gradient(135deg, #00b4d8, #0077b6); }
-    .theme-ev { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-    .theme-cruise { background: linear-gradient(135deg, #3498db, #2c3e50); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>领跑世界的中国成就 - 数字展厅</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'china-red': '#C8102E',
+                        'tech-blue': '#0052D9',
+                        'light-blue': '#E8F3FF'
+                    },
+                    fontFamily: {
+                        sans: ['PingFang SC', 'Microsoft YaHei', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .page-transition {
+                transition: opacity 0.4s ease-in-out;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 15px rgba(0, 82, 217, 0.15);
+            }
+            .img-fallback {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
 </head>
-<body>
-
-  <!-- Cover Page -->
-  <div id="cover" class="page">
-    <div class="cover-decoration">
-      <span class="star">&#9733;</span>
-      <span class="star">&#9733;</span>
-      <span class="star">&#9733;</span>
-    </div>
-    <div class="cover-content">
-      <div class="cover-badge">数字展厅</div>
-      <h1 class="cover-title">领跑世界的<br>中国成就</h1>
-      <p class="cover-subtitle">大国重器 · 科技强国</p>
-      <div class="cover-divider"></div>
-      <button class="cover-btn" onclick="showPage('exhibition')">
-        点击进入展厅 <span class="arrow">&#8594;</span>
-      </button>
-    </div>
-    <div class="cover-footer">数字孪生沙盘 · 社会主义初级阶段特征展示</div>
-  </div>
-
-  <!-- Main Exhibition Page -->
-  <div id="exhibition" class="page hidden">
-    <div class="exhibition-header">
-      <button class="back-btn" onclick="showPage('cover')">&#8592; 返回封面</button>
-      <h2 class="section-title">科技强国展区</h2>
-      <p class="section-desc">点击展品查看详细信息</p>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- 首页 -->
+    <div id="home-page" class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-china-red to-tech-blue px-6 page-transition">
+        <div class="text-center">
+            <div class="w-20 h-1 bg-white mx-auto mb-6 rounded-full opacity-80"></div>
+            <h1 class="text-[clamp(1.8rem,5vw,2.5rem)] font-bold text-white mb-3 leading-tight">
+                领跑世界的
+            </h1>
+            <h2 class="text-[clamp(2rem,6vw,3rem)] font-bold text-white mb-12 leading-tight">
+                中国成就
+            </h2>
+            <button onclick="showPage('exhibition-page')" 
+                    class="bg-white text-tech-blue font-semibold px-10 py-4 rounded-full text-lg hover:bg-gray-100 active:scale-95 transition-all duration-200 shadow-lg">
+                点击进入展厅
+            </button>
+        </div>
+        <div class="absolute bottom-8 text-white/60 text-sm">
+            中国科技成就数字展厅
+        </div>
     </div>
 
-    <div class="exhibit-list">
-      <!-- Exhibit 1: Artificial Sun -->
-      <div class="exhibit-card" onclick="showDetail(0)">
-        <div class="exhibit-image-placeholder theme-sun">
-          <span class="exhibit-tag">能源科技</span>
-          <span style="font-size:64px;filter:drop-shadow(0 0 20px rgba(255,200,0,0.8))">&#9788;</span>
-        </div>
-        <div class="exhibit-info">
-          <h3 class="exhibit-name">人造太阳：核聚变能源突破</h3>
-          <p class="exhibit-brief">中国EAST装置实现1.2亿摄氏度101秒等离子体运行，创造世界纪录，为人类终极能源带来希望。</p>
-          <div class="exhibit-action">查看详情 &#8594;</div>
-        </div>
-      </div>
+    <!-- 主展区 -->
+    <div id="exhibition-page" class="min-h-screen bg-gray-50 px-4 py-6 hidden page-transition">
+        <div class="max-w-lg mx-auto">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">主展区</h2>
+                <p class="text-gray-500">点击展品查看详情</p>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-4">
+                <!-- 展品1：人造太阳 -->
+                <div onclick="showPage('detail-1')" 
+                     class="bg-white rounded-2xl overflow-hidden card-shadow cursor-pointer active:scale-[0.98] transition-transform">
+                    <div class="h-44 overflow-hidden">
+                        <img src="images/east.jpg" alt="人造太阳EAST装置" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-china-red/10 text-china-red text-xs px-2 py-1 rounded">能源科技</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-1">人造太阳突破</h3>
+                        <p class="text-gray-500 text-sm">EAST装置重大技术突破</p>
+                    </div>
+                </div>
 
-      <!-- Exhibit 2: Salt Cavern Hydrogen Storage -->
-      <div class="exhibit-card" onclick="showDetail(1)">
-        <div class="exhibit-image-placeholder theme-hydrogen">
-          <span class="exhibit-tag">储能工程</span>
-          <span style="font-size:64px;filter:drop-shadow(0 0 20px rgba(0,180,216,0.8))">&#9881;</span>
-        </div>
-        <div class="exhibit-info">
-          <h3 class="exhibit-name">亚洲最大盐穴储氢工程</h3>
-          <p class="exhibit-brief">利用地下盐穴空间储存氢气，规模亚洲第一，为氢能大规模应用提供关键基础设施支撑。</p>
-          <div class="exhibit-action">查看详情 &#8594;</div>
-        </div>
-      </div>
+                <!-- 展品2：盐穴储氢 -->
+                <div onclick="showPage('detail-2')" 
+                     class="bg-white rounded-2xl overflow-hidden card-shadow cursor-pointer active:scale-[0.98] transition-transform">
+                    <div class="h-44 overflow-hidden">
+                        <img src="images/hydrogen.png" alt="盐穴储氢工程" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-tech-blue/10 text-tech-blue text-xs px-2 py-1 rounded">储能技术</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-1">亚洲最大盐穴储氢工程</h3>
+                        <p class="text-gray-500 text-sm">我国储能技术里程碑</p>
+                    </div>
+                </div>
 
-      <!-- Exhibit 3: Battery Swap -->
-      <div class="exhibit-card" onclick="showDetail(2)">
-        <div class="exhibit-image-placeholder theme-ev">
-          <span class="exhibit-tag">新能源</span>
-          <span style="font-size:64px;filter:drop-shadow(0 0 20px rgba(46,204,113,0.8))">&#9889;</span>
-        </div>
-        <div class="exhibit-info">
-          <h3 class="exhibit-name">国产新能源换电技术</h3>
-          <p class="exhibit-brief">蔚来等企业实现3分钟自动换电，全国布局超2300座换电站，引领全球新能源汽车补能模式创新。</p>
-          <div class="exhibit-action">查看详情 &#8594;</div>
-        </div>
-      </div>
+                <!-- 展品3：新能源换电 -->
+                <div onclick="showPage('detail-3')" 
+                     class="bg-white rounded-2xl overflow-hidden card-shadow cursor-pointer active:scale-[0.98] transition-transform">
+                    <div class="h-44 overflow-hidden">
+                        <img src="images/swap.png" alt="新能源换电技术" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-green-600/10 text-green-600 text-xs px-2 py-1 rounded">新能源</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-1">国产新能源换电技术</h3>
+                        <p class="text-gray-500 text-sm">3分钟极速换电技术</p>
+                    </div>
+                </div>
 
-      <!-- Exhibit 4: Cruise Ship -->
-      <div class="exhibit-card" onclick="showDetail(3)">
-        <div class="exhibit-image-placeholder theme-cruise">
-          <span class="exhibit-tag">高端制造</span>
-          <span style="font-size:64px;filter:drop-shadow(0 0 20px rgba(52,152,219,0.8))">&#9973;</span>
+                <!-- 展品4：大型邮轮 -->
+                <div onclick="showPage('detail-4')" 
+                     class="bg-white rounded-2xl overflow-hidden card-shadow cursor-pointer active:scale-[0.98] transition-transform">
+                    <div class="h-44 overflow-hidden">
+                        <img src="images/cruise.jpg" alt="爱达·花城号" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-purple-600/10 text-purple-600 text-xs px-2 py-1 rounded">高端制造</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-1">国产大型邮轮"爱达·花城号"</h3>
+                        <p class="text-gray-500 text-sm">国产大型邮轮制造突破</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 二维码区域 -->
+            <!-- 
+                【高清二维码生成方式说明】
+                如需保存或打印高清二维码，请访问以下链接：
+                https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=展厅访问链接
+                将 size 参数改为 1000x1000 即可获得1000x1000像素的高清二维码
+            -->
+            <div class="mt-8 mb-6">
+                <div class="bg-white rounded-2xl p-6 card-shadow">
+                    <div class="flex flex-col items-center">
+                        <div class="bg-white p-3 rounded-xl shadow-sm">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=https://china-achievements-exhibition.vercel.app" 
+                                 alt="展厅二维码" 
+                                 width="200" 
+                                 height="200"
+                                 class="block">
+                        </div>
+                        <p class="mt-4 text-gray-600 text-sm font-medium">扫码进入展厅</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="exhibit-info">
-          <h3 class="exhibit-name">国产大型邮轮「爱达·花城号」</h3>
-          <p class="exhibit-brief">中国自主建造的首艘大型邮轮，总吨位超13万吨，标志着中国掌握高端船舶制造全链条技术。</p>
-          <div class="exhibit-action">查看详情 &#8594;</div>
-        </div>
-      </div>
     </div>
 
-    <!-- QR Code Section -->
-    <div class="qr-section">
-      <div class="qr-card">
-        <div class="qr-card-title">&#128241; 分享展厅</div>
-        <div class="qr-code" id="qr-container"></div>
-        <p class="qr-caption">扫码进入展厅</p>
-      </div>
+    <!-- 详情页1：人造太阳 -->
+    <div id="detail-1" class="min-h-screen bg-white hidden page-transition">
+        <div class="relative">
+            <div class="h-64 overflow-hidden">
+                <img src="images/east.jpg" alt="人造太阳EAST装置" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+            </div>
+            <button onclick="showPage('exhibition-page')" 
+                    class="absolute top-4 left-4 bg-white/90 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="px-5 py-6 max-w-lg mx-auto">
+            <span class="bg-china-red/10 text-china-red text-sm px-3 py-1 rounded-full inline-block mb-4">能源科技</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">人造太阳突破</h2>
+            <div class="w-12 h-1 bg-china-red rounded-full mb-5"></div>
+            <p class="text-gray-600 leading-relaxed text-base">
+                中国EAST装置实现1.2亿摄氏度等离子体运行1056秒，创造世界纪录。这一突破为可控核聚变商业化奠定关键基础，标志我国在"人造太阳"领域领跑全球。
+            </p>
+        </div>
     </div>
-  </div>
 
-  <!-- Detail Pages -->
-  <div id="detail-0" class="page detail-page hidden">
-    <div class="detail-header-img theme-sun">
-      <button class="detail-back" onclick="showPage('exhibition')">&#8592;</button>
-      <span style="font-size:96px;filter:drop-shadow(0 0 30px rgba(255,200,0,0.8))">&#9788;</span>
-    </div>
-    <div class="detail-content">
-      <span class="detail-tag">能源科技</span>
-      <h1 class="detail-title">人造太阳：核聚变能源突破</h1>
-      <div class="detail-stats">
-        <div class="stat-card">
-          <div class="stat-value">1.2亿&#8451;</div>
-          <div class="stat-label">等离子体温度</div>
+    <!-- 详情页2：盐穴储氢 -->
+    <div id="detail-2" class="min-h-screen bg-white hidden page-transition">
+        <div class="relative">
+            <div class="h-64 overflow-hidden">
+                <img src="images/hydrogen.png" alt="盐穴储氢工程" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+            </div>
+            <button onclick="showPage('exhibition-page')" 
+                    class="absolute top-4 left-4 bg-white/90 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
         </div>
-        <div class="stat-card">
-          <div class="stat-value">101秒</div>
-          <div class="stat-label">持续运行时间</div>
+        <div class="px-5 py-6 max-w-lg mx-auto">
+            <span class="bg-tech-blue/10 text-tech-blue text-sm px-3 py-1 rounded-full inline-block mb-4">储能技术</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">亚洲最大盐穴储氢工程</h2>
+            <div class="w-12 h-1 bg-tech-blue rounded-full mb-5"></div>
+            <p class="text-gray-600 leading-relaxed text-base">
+                我国建成亚洲最大盐穴地下储氢库，利用地下盐穴实现大规模高压储氢，单库容量超百万立方米。该技术突破氢能存储瓶颈，为氢能产业规模化发展提供核心支撑。
+            </p>
         </div>
-      </div>
-      <div class="detail-body">
-        <p>位于合肥的全超导托卡马克核聚变实验装置（EAST），被称为中国"人造太阳"。2021年，该装置成功实现1.2亿摄氏度下运行101秒，创造了世界纪录。</p>
-        <div class="detail-divider"></div>
-        <p>这一突破意味着人类距离实现可控核聚变发电又近了一步。核聚变能源被视为清洁、安全、几乎无限的终极能源方案，海水中的氘即可满足人类数十亿年的能源需求。</p>
-      </div>
-      <div class="detail-nav">
-        <button class="detail-nav-btn" disabled style="opacity:0.3">
-          <div class="nav-label">上一个</div>
-          无
-        </button>
-        <button class="detail-nav-btn" onclick="showDetail(1)">
-          <div class="nav-label">下一个</div>
-          盐穴储氢工程 &#8594;
-        </button>
-      </div>
     </div>
-  </div>
 
-  <div id="detail-1" class="page detail-page hidden">
-    <div class="detail-header-img theme-hydrogen">
-      <button class="detail-back" onclick="showPage('exhibition')">&#8592;</button>
-      <span style="font-size:96px;filter:drop-shadow(0 0 30px rgba(0,180,216,0.8))">&#9881;</span>
-    </div>
-    <div class="detail-content">
-      <span class="detail-tag">储能工程</span>
-      <h1 class="detail-title">亚洲最大盐穴储氢工程</h1>
-      <div class="detail-stats">
-        <div class="stat-card">
-          <div class="stat-value">亚洲第1</div>
-          <div class="stat-label">规模排名</div>
+    <!-- 详情页3：新能源换电 -->
+    <div id="detail-3" class="min-h-screen bg-white hidden page-transition">
+        <div class="relative">
+            <div class="h-64 overflow-hidden">
+                <img src="images/swap.png" alt="新能源换电技术" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+            </div>
+            <button onclick="showPage('exhibition-page')" 
+                    class="absolute top-4 left-4 bg-white/90 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
         </div>
-        <div class="stat-card">
-          <div class="stat-value">地下盐穴</div>
-          <div class="stat-label">储氢方式</div>
+        <div class="px-5 py-6 max-w-lg mx-auto">
+            <span class="bg-green-600/10 text-green-600 text-sm px-3 py-1 rounded-full inline-block mb-4">新能源</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">国产新能源换电技术</h2>
+            <div class="w-12 h-1 bg-green-600 rounded-full mb-5"></div>
+            <p class="text-gray-600 leading-relaxed text-base">
+                中国车企首创3分钟极速换电技术，全自动机械臂完成电池更换，比加油更快捷。换电站网络覆盖全国，实现车电分离商业模式，破解新能源汽车补能焦虑。
+            </p>
         </div>
-      </div>
-      <div class="detail-body">
-        <p>该工程利用地下深层盐穴的天然密封性来储存氢气，是目前亚洲规模最大的盐穴储氢项目。盐穴储氢具有容量大、成本低、安全性高等优势。</p>
-        <div class="detail-divider"></div>
-        <p>氢能是未来清洁能源的重要方向，但储存和运输是核心难题。盐穴储氢技术的突破，为氢能大规模商业化应用提供了关键的基础设施支撑，助力中国实现"双碳"目标。</p>
-      </div>
-      <div class="detail-nav">
-        <button class="detail-nav-btn" onclick="showDetail(0)">
-          <div class="nav-label">上一个</div>
-          &#8592; 人造太阳
-        </button>
-        <button class="detail-nav-btn" onclick="showDetail(2)">
-          <div class="nav-label">下一个</div>
-          换电技术 &#8594;
-        </button>
-      </div>
     </div>
-  </div>
 
-  <div id="detail-2" class="page detail-page hidden">
-    <div class="detail-header-img theme-ev">
-      <button class="detail-back" onclick="showPage('exhibition')">&#8592;</button>
-      <span style="font-size:96px;filter:drop-shadow(0 0 30px rgba(46,204,113,0.8))">&#9889;</span>
-    </div>
-    <div class="detail-content">
-      <span class="detail-tag">新能源</span>
-      <h1 class="detail-title">国产新能源换电技术</h1>
-      <div class="detail-stats">
-        <div class="stat-card">
-          <div class="stat-value">3分钟</div>
-          <div class="stat-label">换电时长</div>
+    <!-- 详情页4：大型邮轮 -->
+    <div id="detail-4" class="min-h-screen bg-white hidden page-transition">
+        <div class="relative">
+            <div class="h-64 overflow-hidden">
+                <img src="images/cruise.jpg" alt="爱达·花城号" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+            </div>
+            <button onclick="showPage('exhibition-page')" 
+                    class="absolute top-4 left-4 bg-white/90 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
         </div>
-        <div class="stat-card">
-          <div class="stat-value">2300+</div>
-          <div class="stat-label">换电站数量</div>
+        <div class="px-5 py-6 max-w-lg mx-auto">
+            <span class="bg-purple-600/10 text-purple-600 text-sm px-3 py-1 rounded-full inline-block mb-4">高端制造</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">国产大型邮轮"爱达·花城号"</h2>
+            <div class="w-12 h-1 bg-purple-600 rounded-full mb-5"></div>
+            <p class="text-gray-600 leading-relaxed text-base">
+                首艘国产大型邮轮"爱达·花城号"成功交付，总吨位14.2万吨，可载客6500余人。该突破标志我国成为全球第五个可建造大型邮轮的国家，实现造船工业皇冠最后一颗明珠。
+            </p>
         </div>
-      </div>
-      <div class="detail-body">
-        <p>中国企业在新能源汽车换电领域处于全球领先地位。以蔚来为代表的换电技术，实现了车辆驶入换电站后3分钟内自动完成电池更换，用户体验远超传统充电模式。</p>
-        <div class="detail-divider"></div>
-        <p>截至2024年底，全国已建成超过2300座换电站，覆盖高速公路和城市核心区域。中国主导制定的换电标准正在向海外输出，引领全球新能源汽车补能模式的创新方向。</p>
-      </div>
-      <div class="detail-nav">
-        <button class="detail-nav-btn" onclick="showDetail(1)">
-          <div class="nav-label">上一个</div>
-          &#8592; 盐穴储氢
-        </button>
-        <button class="detail-nav-btn" onclick="showDetail(3)">
-          <div class="nav-label">下一个</div>
-          大型邮轮 &#8594;
-        </button>
-      </div>
     </div>
-  </div>
 
-  <div id="detail-3" class="page detail-page hidden">
-    <div class="detail-header-img theme-cruise">
-      <button class="detail-back" onclick="showPage('exhibition')">&#8592;</button>
-      <span style="font-size:96px;filter:drop-shadow(0 0 30px rgba(52,152,219,0.8))">&#9973;</span>
-    </div>
-    <div class="detail-content">
-      <span class="detail-tag">高端制造</span>
-      <h1 class="detail-title">国产大型邮轮「爱达·花城号」</h1>
-      <div class="detail-stats">
-        <div class="stat-card">
-          <div class="stat-value">13.5万吨</div>
-          <div class="stat-label">总吨位</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">首艘国产</div>
-          <div class="stat-label">里程碑意义</div>
-        </div>
-      </div>
-      <div class="detail-body">
-        <p>「爱达·花城号」是中国自主建造的第二艘国产大型邮轮，总吨位超过13万吨，可容纳数千名乘客。大型邮轮与航母、大型客机并列为工业皇冠上的"三颗明珠"。</p>
-        <div class="detail-divider"></div>
-        <p>该船的建成标志着中国全面掌握了高端船舶制造的全链条核心技术，打破了欧洲在该领域的长期垄断，是中国制造业向高端迈进的重要里程碑。</p>
-      </div>
-      <div class="detail-nav">
-        <button class="detail-nav-btn" onclick="showDetail(2)">
-          <div class="nav-label">上一个</div>
-          &#8592; 换电技术
-        </button>
-        <button class="detail-nav-btn" disabled style="opacity:0.3">
-          <div class="nav-label">下一个</div>
-          无
-        </button>
-      </div>
-    </div>
-  </div>
+    <script>
+        // 页面切换函数
+        function showPage(pageId) {
+            // 获取所有页面
+            const pages = [
+                'home-page',
+                'exhibition-page', 
+                'detail-1',
+                'detail-2',
+                'detail-3',
+                'detail-4'
+            ];
+            
+            // 隐藏所有页面（淡出）
+            pages.forEach(id => {
+                const page = document.getElementById(id);
+                if (page) {
+                    page.style.opacity = '0';
+                    setTimeout(() => {
+                        page.classList.add('hidden');
+                    }, 200);
+                }
+            });
+            
+            // 显示目标页面（淡入）
+            setTimeout(() => {
+                const targetPage = document.getElementById(pageId);
+                if (targetPage) {
+                    targetPage.classList.remove('hidden');
+                    targetPage.style.opacity = '0';
+                    // 强制重绘
+                    targetPage.offsetHeight;
+                    targetPage.style.opacity = '1';
+                }
+                // 滚动到顶部
+                window.scrollTo(0, 0);
+            }, 250);
+        }
 
-  <!-- QR Code Library -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script>
-    function showPage(pageId) {
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(p => {
-        p.classList.add('hidden');
-      });
-      const target = document.getElementById(pageId);
-      // Force reflow
-      void target.offsetWidth;
-      target.classList.remove('hidden');
-      target.scrollTop = 0;
-    }
-
-    function showDetail(index) {
-      const pageId = 'detail-' + index;
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(p => {
-        p.classList.add('hidden');
-      });
-      const target = document.getElementById(pageId);
-      void target.offsetWidth;
-      target.classList.remove('hidden');
-      target.scrollTop = 0;
-    }
-
-    // Generate QR code pointing to current URL
-    window.addEventListener('DOMContentLoaded', function() {
-      const qrEl = document.getElementById('qr-container');
-      if (qrEl && typeof QRCode !== 'undefined') {
-        new QRCode(qrEl, {
-          text: window.location.href,
-          width: 180,
-          height: 180,
-          colorDark: '#1a1a2e',
-          colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.H
+        // 初始化首页
+        document.addEventListener('DOMContentLoaded', function() {
+            const homePage = document.getElementById('home-page');
+            homePage.style.opacity = '1';
         });
-      } else if (qrEl) {
-        // Fallback: show placeholder with current URL
-        qrEl.innerHTML = '<div style="text-align:center;padding:20px">' +
-          '<div style="font-size:40px;margin-bottom:12px">&#128241;</div>' +
-          '<div style="font-size:11px;color:#999;word-break:break-all">' +
-          window.location.href + '</div></div>';
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>

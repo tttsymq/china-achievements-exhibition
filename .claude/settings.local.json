@@ -4,7 +4,11 @@
       "Bash(/Users/ydong/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/brainstorming/scripts/start-server.sh *)",
       "Bash(scripts/stop-server.sh /Users/ydong/Desktop/demo/.superpowers/brainstorm/39176-1779763018/state)",
       "Bash(python3 *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(curl -sI --connect-timeout 3 https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js)",
+      "Bash(curl -s http://212.64.29.147/sandtable/index.html)",
+      "Bash(curl -sL --connect-timeout 10 \"https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js\" -o /Users/ydong/Desktop/demo/public/sandtable/three.min.js)",
+      "Bash(curl -sL --connect-timeout 10 \"https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js\" -o /Users/ydong/Desktop/demo/public/sandtable/OrbitControls.js)"
     ]
   }
 }

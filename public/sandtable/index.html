@@ -355,30 +355,13 @@
 <!-- 操作提示 -->
 <div id="hint" class="animate-in" style="animation-delay: 1.6s">拖拽旋转 · 滚轮缩放 · 悬停查看详情</div>
 
-<!-- Three.js — 多 CDN 回退链 -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script>
-if (typeof THREE === 'undefined') {
-    document.write('<script src="https://unpkg.com/three@0.128.0/build/three.min.js"><\/script>');
-}
-</script>
-<script>
-if (typeof THREE === 'undefined') {
-    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
-}
-</script>
-
-<!-- OrbitControls — r128 examples/js 版本 -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script>
-if (typeof THREE !== 'undefined' && typeof THREE.OrbitControls === 'undefined') {
-    document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
-}
-</script>
+<!-- Three.js — 本地文件，无需 CDN -->
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
 
 <script>
 // ============================================================
-//  安全超时 — 无论发生什么，5 秒后强制关闭 loader
+//  安全超时 — 无论发生什么，3 秒后强制关闭 loader
 // ============================================================
 (function() {
     var loaderHidden = false;
@@ -388,29 +371,13 @@ if (typeof THREE !== 'undefined' && typeof THREE.OrbitControls === 'undefined') 
         var el = document.getElementById('loader');
         if (el) el.classList.add('hidden');
     };
-    setTimeout(window.hideLoader, 5000);
+    setTimeout(window.hideLoader, 3000);
 })();
-
-// ---- 动态加载 Three.js 回退 ----
-setTimeout(function() {
-    if (typeof THREE === 'undefined') {
-        console.warn('主 CDN 加载失败，尝试备用源...');
-        var s = document.createElement('script');
-        s.src = 'https://unpkg.com/three@0.128.0/build/three.min.js';
-        s.onload = function() { window.hideLoader && window.hideLoader(); };
-        document.head.appendChild(s);
-        // 再尝试加载 OrbitControls
-        var s2 = document.createElement('script');
-        s2.src = 'https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js';
-        document.head.appendChild(s2);
-    }
-}, 3000);
 
 // ============================================================
 //  中国发展全景沙盘 — 沉浸式 3D 对比场景
 // ============================================================
 
-// 检查 Three.js 是否加载成功
 if (typeof THREE === 'undefined') {
     document.getElementById('loader').innerHTML = '<h2 style="color:#f06050">Three.js 加载失败</h2><p style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-top:8px">请检查网络连接后刷新页面</p>';
     throw new Error('Three.js 未加载');

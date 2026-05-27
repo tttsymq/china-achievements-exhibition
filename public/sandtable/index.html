@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国发展全景沙盘</title>
+    <style>
+        /* ============================================================
+           字体与全局变量
+           ============================================================ */
+        /* 字体 — 优先使用系统字体 */
+        :root {
+            --bg-deep: #050810;
+            --bg-card: rgba(8, 14, 28, 0.82);
+            --border-subtle: rgba(255,255,255,0.06);
+            --accent-achieve: #3b82f6;
+            --accent-achieve-glow: rgba(59,130,246,0.25);
+            --accent-reality: #d4944a;
+            --accent-reality-glow: rgba(212,148,74,0.2);
+            --text-primary: #e8e4df;
+            --text-secondary: rgba(255,255,255,0.5);
+            --text-muted: rgba(255,255,255,0.3);
+            --serif: 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-deep);
+            overflow: hidden;
+            font-family: var(--sans);
+            color: var(--text-primary);
+            user-select: none;
+        }
+
+        #canvas-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        /* ============================================================
+           顶部标题
+           ============================================================ */
+        #header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+            text-align: center;
+            padding: 20px 20px 0;
+            background: linear-gradient(180deg, var(--bg-deep) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        #header h1 {
+            font-family: var(--serif);
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #e8e4df 0%, #a0a8c0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        #header .subtitle {
+            font-size: clamp(0.65rem, 1.2vw, 0.8rem);
+            color: var(--text-muted);
+            margin-top: 6px;
+            letter-spacing: 3px;
+            font-weight: 300;
+        }
+
+        /* ============================================================
+           中线分割
+           ============================================================ */
+        #divider {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 60vh;
+            z-index: 5;
+            pointer-events: none;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                rgba(255,255,255,0.08) 20%,
+                rgba(255,255,255,0.12) 50%,
+                rgba(255,255,255,0.08) 80%,
+                transparent 100%
+            );
+        }
+
+        /* ============================================================
+           左右信息面板
+           ============================================================ */
+        .side-panel {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            width: clamp(220px, 18vw, 320px);
+            padding: 24px 20px;
+            border-radius: 16px;
+            pointer-events: auto;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .side-panel:hover {
+            transform: translateY(-50%) scale(1.02);
+        }
+
+        /* 左侧 — 成就面 */
+        #panel-achieve {
+            left: clamp(12px, 2vw, 32px);
+            background: linear-gradient(145deg, rgba(10,18,40,0.88) 0%, rgba(6,10,22,0.92) 100%);
+            box-shadow: 0 0 40px rgba(59,130,246,0.08), inset 0 1px 0 rgba(59,130,246,0.1);
+        }
+        #panel-achieve::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: 20%; right: 20%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-achieve), transparent);
+            border-radius: 1px;
+        }
+
+        /* 右侧 — 现状面 */
+        #panel-reality {
+            right: clamp(12px, 2vw, 32px);
+            background: linear-gradient(145deg, rgba(20,14,8,0.88) 0%, rgba(14,10,6,0.92) 100%);
+            box-shadow: 0 0 40px rgba(212,148,74,0.08), inset 0 1px 0 rgba(212,148,74,0.1);
+        }
+        #panel-reality::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: 20%; right: 20%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-reality), transparent);
+            border-radius: 1px;
+        }
+
+        .panel-label {
+            font-family: var(--serif);
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: 400;
+        }
+        #panel-achieve .panel-label { color: var(--accent-achieve); }
+        #panel-reality .panel-label { color: var(--accent-reality); }
+
+        .panel-title {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .panel-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            margin-bottom: 16px;
+        }
+
+        /* 数据项 */
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+        .data-item:last-child { border-bottom: none; }
+
+        .data-item .val {
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            margin-left: 8px;
+        }
+        #panel-achieve .val { color: var(--accent-achieve); }
+        #panel-reality .val { color: var(--accent-reality); }
+
+        .data-item .desc {
+            color: var(--text-secondary);
+            font-weight: 300;
+            flex: 1;
+        }
+
+        /* ============================================================
+           底部操作提示
+           ============================================================ */
+        #hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            pointer-events: none;
+        }
+
+        /* ============================================================
+           悬停信息卡
+           ============================================================ */
+        #tooltip {
+            position: fixed;
+            z-index: 20;
+            background: rgba(6, 10, 22, 0.94);
+            border: 1px solid rgba(59,130,246,0.25);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            line-height: 1.7;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            max-width: 300px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px);
+            transform: translateY(4px);
+        }
+        #tooltip.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #tooltip .tip-title {
+            font-family: var(--serif);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: #80b0ff;
+        }
+        #tooltip .tip-body {
+            color: var(--text-secondary);
+            font-weight: 300;
+            font-size: 0.75rem;
+        }
+
+        /* ============================================================
+           加载动画
+           ============================================================ */
+        #loader {
+            position: fixed; inset: 0;
+            z-index: 100;
+            background: var(--bg-deep);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+        #loader.hidden { opacity: 0; pointer-events: none; }
+        #loader h2 {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            letter-spacing: 6px;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+        }
+        .loader-bar {
+            width: 200px; height: 2px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 1px;
+            overflow: hidden;
+        }
+        .loader-bar-inner {
+            width: 0%; height: 100%;
+            background: linear-gradient(90deg, var(--accent-achieve), var(--accent-reality));
+            border-radius: 1px;
+            animation: load 2s ease-in-out forwards;
+        }
+        @keyframes load {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* ============================================================
+           入场动画
+           ============================================================ */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 加载 -->
+<div id="loader">
+    <h2>沙盘加载中</h2>
+    <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+</div>
+
+<!-- 3D 渲染 -->
+<div id="canvas-container"></div>
+
+<!-- 顶部标题 -->
+<div id="header">
+    <h1 class="animate-in" style="animation-delay: 0.5s">中国发展全景沙盘</h1>
+    <p class="subtitle animate-in" style="animation-delay: 0.7s">社会主义初级阶段发展不平衡、不充分 — 交互式教学展示</p>
+</div>
+
+<!-- 中线分割 -->
+<div id="divider" class="animate-in" style="animation-delay: 0.9s"></div>
+
+<!-- 左侧面板 — 成就面 -->
+<div id="panel-achieve" class="side-panel animate-in" style="animation-delay: 1.1s">
+    <div class="panel-label">ACHIEVEMENT</div>
+    <div class="panel-title">领先与成就面</div>
+    <div class="panel-divider"></div>
+    <div class="data-item"><span class="desc">GDP 总量</span><span class="val">世界第二</span></div>
+    <div class="data-item"><span class="desc">高铁里程</span><span class="val">4.5 万公里</span></div>
+    <div class="data-item"><span class="desc">5G 基站</span><span class="val">超 300 万</span></div>
+    <div class="data-item"><span class="desc">光伏产能</span><span class="val">全球 80%+</span></div>
+    <div class="data-item"><span class="desc">大飞机 C919</span><span class="val">商飞成功</span></div>
+    <div class="data-item"><span class="desc">义务教育</span><span class="val">95.5%</span></div>
+    <div class="data-item"><span class="desc">医保覆盖</span><span class="val">13.6 亿人</span></div>
+    <div class="data-item"><span class="desc">新能源车</span><span class="val">全球第一</span></div>
+</div>
+
+<!-- 右侧面板 — 现状面 -->
+<div id="panel-reality" class="side-panel animate-in" style="animation-delay: 1.3s">
+    <div class="panel-label">REALITY</div>
+    <div class="panel-title">发展与现状面</div>
+    <div class="panel-divider"></div>
+    <div class="data-item"><span class="desc">人均 GDP</span><span class="val">中等收入水平</span></div>
+    <div class="data-item"><span class="desc">西部路网密度</span><span class="val">东部 1/3</span></div>
+    <div class="data-item"><span class="desc">偏远山区</span><span class="val">4G 仍不稳定</span></div>
+    <div class="data-item"><span class="desc">核心部件</span><span class="val">依赖进口</span></div>
+    <div class="data-item"><span class="desc">清洁能源</span><span class="val">普及率待提升</span></div>
+    <div class="data-item"><span class="desc">教育资源</span><span class="val">城乡差距明显</span></div>
+    <div class="data-item"><span class="desc">优质医疗</span><span class="val">集中一二线城市</span></div>
+    <div class="data-item"><span class="desc">充电设施</span><span class="val">区域分布不均</span></div>
+</div>
+
+<!-- 悬停信息卡 -->
+<div id="tooltip">
+    <div class="tip-title"></div>
+    <div class="tip-body"></div>
+</div>
+
+<!-- 操作提示 -->
+<div id="hint" class="animate-in" style="animation-delay: 1.6s">拖拽旋转 · 滚轮缩放 · 悬停查看详情</div>
+
+<!-- Three.js — 多 CDN 回退链 -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script>
+if (typeof THREE === 'undefined') {
+    document.write('<script src="https://unpkg.com/three@0.128.0/build/three.min.js"><\/script>');
+}
+</script>
+<script>
+if (typeof THREE === 'undefined') {
+    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+}
+</script>
+
+<!-- OrbitControls — r128 examples/js 版本 -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+if (typeof THREE !== 'undefined' && typeof THREE.OrbitControls === 'undefined') {
+    document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+}
+</script>
+
+<script>
+// ============================================================
+//  安全超时 — 无论发生什么，5 秒后强制关闭 loader
+// ============================================================
+(function() {
+    var loaderHidden = false;
+    window.hideLoader = function() {
+        if (loaderHidden) return;
+        loaderHidden = true;
+        var el = document.getElementById('loader');
+        if (el) el.classList.add('hidden');
+    };
+    setTimeout(window.hideLoader, 5000);
+})();
+
+// ---- 动态加载 Three.js 回退 ----
+setTimeout(function() {
+    if (typeof THREE === 'undefined') {
+        console.warn('主 CDN 加载失败，尝试备用源...');
+        var s = document.createElement('script');
+        s.src = 'https://unpkg.com/three@0.128.0/build/three.min.js';
+        s.onload = function() { window.hideLoader && window.hideLoader(); };
+        document.head.appendChild(s);
+        // 再尝试加载 OrbitControls
+        var s2 = document.createElement('script');
+        s2.src = 'https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js';
+        document.head.appendChild(s2);
+    }
+}, 3000);
+
+// ============================================================
+//  中国发展全景沙盘 — 沉浸式 3D 对比场景
+// ============================================================
+
+// 检查 Three.js 是否加载成功
+if (typeof THREE === 'undefined') {
+    document.getElementById('loader').innerHTML = '<h2 style="color:#f06050">Three.js 加载失败</h2><p style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-top:8px">请检查网络连接后刷新页面</p>';
+    throw new Error('Three.js 未加载');
+}
+
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050810);
+scene.fog = new THREE.FogExp2(0x050810, 0.012);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(0, 14, 20);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+container.appendChild(renderer.domElement);
+
+// ---- 相机控制器（OrbitControls 失败时使用基础鼠标旋转）----
+var useOrbitControls = false;
+if (typeof THREE !== 'undefined' && typeof THREE.OrbitControls !== 'undefined') {
+    try {
+        useOrbitControls = true;
+        var orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+        orbitControls.enableDamping = true;
+        orbitControls.dampingFactor = 0.05;
+        orbitControls.maxPolarAngle = Math.PI / 2.1;
+        orbitControls.minDistance = 8;
+        orbitControls.maxDistance = 45;
+        orbitControls.target.set(0, 0, 0);
+    } catch(e) {
+        console.warn('OrbitControls 初始化失败，使用基础旋转:', e);
+        useOrbitControls = false;
+    }
+}
+
+// ---- 基础鼠标/触摸旋转（OrbitControls 的降级方案）----
+var mouseRotate = { enabled: false, lastX: 0, lastY: 0, theta: 0, phi: Math.PI / 3, dist: 22 };
+renderer.domElement.addEventListener('mousedown', function(e) { mouseRotate.enabled = true; mouseRotate.lastX = e.clientX; mouseRotate.lastY = e.clientY; });
+renderer.domElement.addEventListener('touchstart', function(e) { if (e.touches.length === 1) { mouseRotate.enabled = true; mouseRotate.lastX = e.touches[0].clientX; mouseRotate.lastY = e.touches[0].clientY; } }, { passive: true });
+renderer.domElement.addEventListener('mousemove', function(e) {
+    if (!mouseRotate.enabled) return;
+    mouseRotate.theta -= (e.clientX - mouseRotate.lastX) * 0.005;
+    mouseRotate.phi = Math.max(0.2, Math.min(Math.PI / 2.1, mouseRotate.phi + (e.clientY - mouseRotate.lastY) * 0.005));
+    mouseRotate.lastX = e.clientX; mouseRotate.lastY = e.clientY;
+});
+renderer.domElement.addEventListener('touchmove', function(e) {
+    if (!mouseRotate.enabled || e.touches.length !== 1) return;
+    mouseRotate.theta -= (e.touches[0].clientX - mouseRotate.lastX) * 0.005;
+    mouseRotate.phi = Math.max(0.2, Math.min(Math.PI / 2.1, mouseRotate.phi + (e.touches[0].clientY - mouseRotate.lastY) * 0.005));
+    mouseRotate.lastX = e.touches[0].clientX; mouseRotate.lastY = e.touches[0].clientY;
+}, { passive: true });
+window.addEventListener('mouseup', function() { mouseRotate.enabled = false; });
+window.addEventListener('touchend', function() { mouseRotate.enabled = false; });
+renderer.domElement.addEventListener('wheel', function(e) {
+    mouseRotate.dist = Math.max(8, Math.min(45, mouseRotate.dist + e.deltaY * 0.05));
+}, { passive: true });
+
+// ---- 灯光 ----
+const ambientLight = new THREE.AmbientLight(0x202040, 0.4);
+scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+dirLight.position.set(8, 18, 8);
+// dirLight.castShadow removed
+// shadow map removed
+// shadow camera removed
+// shadow camera removed
+// shadow camera removed
+// shadow camera removed
+// shadow camera removed
+// shadow camera removed
+scene.add(dirLight);
+
+const fillLight = new THREE.DirectionalLight(0x4060a0, 0.25);
+fillLight.position.set(-10, 8, -5);
+scene.add(fillLight);
+
+// 左侧蓝色点光
+const bluePoint = new THREE.PointLight(0x3b82f6, 2, 25);
+bluePoint.position.set(-8, 6, -3);
+scene.add(bluePoint);
+
+// 右侧暖色点光
+const warmPoint = new THREE.PointLight(0xd4944a, 1.2, 25);
+warmPoint.position.set(8, 5, 5);
+scene.add(warmPoint);
+
+// ---- 交互 ----
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const tooltip = document.getElementById('tooltip');
+const tooltipTitle = tooltip.querySelector('.tip-title');
+const tooltipBody = tooltip.querySelector('.tip-body');
+const interactableObjects = [];
+
+// ---- 工具 ----
+function makeMat(color, emissive = 0, emissiveIntensity = 0, metalness = 0.3, roughness = 0.5, transparent = false, opacity = 1) {
+    const m = new THREE.MeshStandardMaterial({ color, metalness, roughness, transparent, opacity });
+    if (emissive) { m.emissive = new THREE.Color(emissive); m.emissiveIntensity = emissiveIntensity; }
+    return m;
+}
+
+function addInteractive(obj, label, desc) {
+    obj.userData = { label, desc };
+    interactableObjects.push(obj);
+}
+
+// ============================================================
+//  沙盘基座
+// ============================================================
+
+// 圆形平台
+const baseGeo = new THREE.CylinderGeometry(18, 19, 1, 64);
+const base = new THREE.Mesh(baseGeo, makeMat(0x0d1520, 0, 0, 0.5, 0.6));
+base.position.y = -0.5;
+// base.receiveShadow removed
+scene.add(base);
+
+// 底座光环
+const ringGeo = new THREE.TorusGeometry(19, 0.12, 8, 128);
+const ring = new THREE.Mesh(ringGeo, makeMat(0x1a3060, 0x0a20aa, 0.5, 0.6, 0.3, true, 0.5));
+ring.rotation.x = -Math.PI / 2;
+ring.position.y = 0;
+scene.add(ring);
+
+// 地形（左右不同高度）
+const terrainSize = 50;
+const terrainRes = 64;
+const terrainGeo = new THREE.PlaneGeometry(terrainSize, terrainSize, terrainRes, terrainRes);
+const terrainVerts = terrainGeo.attributes.position.array;
+for (let i = 0; i < terrainVerts.length; i += 3) {
+    const x = terrainVerts[i];
+    const y = terrainVerts[i + 1];
+    // 左侧更平坦（现代城市），右侧有起伏（乡村山地）
+    if (x > 0) {
+        terrainVerts[i + 2] = Math.sin(x * 0.3) * 0.5 + Math.cos(y * 0.2) * 0.3 + Math.sin(x * 0.8 + y * 0.5) * 0.15;
+    } else {
+        terrainVerts[i + 2] = Math.sin(x * 0.5) * 0.1 + Math.cos(y * 0.3) * 0.05;
+    }
+}
+terrainGeo.computeVertexNormals();
+const terrainMat = new THREE.MeshStandardMaterial({
+    color: 0x111822, roughness: 0.9, metalness: 0.1,
+    wireframe: false
+});
+const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+terrain.rotation.x = -Math.PI / 2;
+terrain.position.y = -0.05;
+terrain// shadow
+scene.add(terrain);
+
+// 网格
+const grid = new THREE.GridHelper(50, 50, 0x0a1520, 0x080e18);
+grid.position.y = 0.02;
+scene.add(grid);
+
+// ============================================================
+//  左侧 — 成就面（现代都市）
+// ============================================================
+const achieveGroup = new THREE.Group();
+scene.add(achieveGroup);
+
+// 地面（深色平滑）
+const achieveGround = new THREE.Mesh(
+    new THREE.PlaneGeometry(22, 22),
+    makeMat(0x0a1020, 0, 0, 0.3, 0.8)
+);
+achieveGround.rotation.x = -Math.PI / 2;
+achieveGround.position.set(-6, 0.01, 0);
+achieveGround// shadow
+scene.add(achieveGround);
+
+// 道路网格
+for (let i = 0; i < 3; i++) {
+    const road = new THREE.Mesh(
+        new THREE.PlaneGeometry(18, 0.3),
+        makeMat(0x151a28, 0, 0, 0.2, 0.9)
+    );
+    road.rotation.x = -Math.PI / 2;
+    road.position.set(-6, 0.02, -4 + i * 4);
+    scene.add(road);
+}
+
+// ---- 东方明珠 ----
+(function createOrientalPearl() {
+    const g = new THREE.Group();
+    g.position.set(-7, 0, -4);
+
+    // 柱子
+    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.4, 7, 12), makeMat(0x888899, 0, 0, 0.4, 0.4)), { position: new THREE.Vector3(0, 3.5, 0) }));
+
+    // 下球
+    const sb1 = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 20), makeMat(0x2040a0, 0x1030cc, 0.6, 0.5, 0.2, true, 0.8));
+    sb1.position.set(0, 3, 0); g.add(sb1);
+
+    // 上球
+    const sb2 = new THREE.Mesh(new THREE.SphereGeometry(0.75, 20, 20), makeMat(0x3050c0, 0x2040dd, 0.5, 0.5, 0.2, true, 0.8));
+    sb2.position.set(0, 5.5, 0); g.add(sb2);
+
+    // 顶球
+    const sb3 = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 12), makeMat(0xffaa33, 0xff8800, 0.6, 0.7, 0.2));
+    sb3.position.set(0, 7.5, 0); g.add(sb3);
+
+    // 天线
+    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.5, 6), makeMat(0x999999)), { position: new THREE.Vector3(0, 9.25, 0) }));
+
+    addInteractive(g, '东方明珠广播电视塔', '上海地标，高 468 米，曾是亚洲最高电视塔，象征改革开放窗口');
+    achieveGroup.add(g);
+})();
+
+// ---- 摩天楼群 ----
+function createSkyscraper(x, z, h, w, d, label, desc) {
+    const g = new THREE.Group();
+    g.position.set(x, 0, z);
+
+    // 主体
+    const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), makeMat(0x152540, 0x0a1530, 0.15, 0.6, 0.4));
+    body.position.y = h / 2;
+    body// shadow
+    g.add(body);
+
+    // 玻璃幕墙
+    const glass = new THREE.Mesh(
+        new THREE.BoxGeometry(w + 0.05, h * 0.85, d + 0.05),
+        makeMat(0x4488cc, 0x113366, 0.2, 0.8, 0.1, true, 0.25)
+    );
+    glass.position.y = h / 2;
+    g.add(glass);
+
+    // 顶部灯光
+    const topLight = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), makeMat(0xff4444, 0xff0000, 1, 0.5, 0.3));
+    topLight.position.y = h + 0.12;
+    g.add(topLight);
+
+    // 光柱效果
+    const beamGeo = new THREE.CylinderGeometry(0.3, 0.8, h * 0.6, 8, 1, true);
+    const beamMat = new THREE.MeshBasicMaterial({
+        color: 0x3b82f6, transparent: true, opacity: 0.06,
+        side: THREE.DoubleSide, depthWrite: false
+    });
+    const beam = new THREE.Mesh(beamGeo, beamMat);
+    beam.position.y = h * 0.7;
+    g.add(beam);
+
+    if (label) addInteractive(g, label, desc);
+    achieveGroup.add(g);
+    return g;
+}
+
+createSkyscraper(-4, -3, 12, 1.4, 1.4, '上海中心大厦', '中国第一高楼 632 米，世界第二高楼，代表中国超高层建筑技术巅峰');
+createSkyscraper(-2, -4, 9, 1.2, 1.2, '金茂大厦', '高 420.5 米，88 层，融合中国传统宝塔元素');
+createSkyscraper(-9, -5, 10, 1.1, 1.1, '环球金融中心', '高 492 米，顶部梯形风洞设计');
+createSkyscraper(-10, -2, 6, 1, 0.9, null, null);
+createSkyscraper(-3, -6, 7, 0.9, 0.8, null, null);
+createSkyscraper(-11, -4, 5, 1.2, 1, null, null);
+createSkyscraper(-5, -7, 4.5, 0.8, 0.7, null, null);
+createSkyscraper(-1, -2, 5.5, 1, 1, null, null);
+
+// ---- C919 大飞机 ----
+const airplaneGroup = new THREE.Group();
+(function() {
+    const g = new THREE.Group();
+
+    // 机身
+    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 3.5, 10), makeMat(0xd0d8e0, 0, 0, 0.6, 0.3)), { rotation: new THREE.Euler(0, 0, Math.PI / 2) }));
+
+    // 机头
+    const nose = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 8), makeMat(0xd0d8e0, 0, 0, 0.6, 0.3));
+    nose.position.set(1.75, 0, 0); nose.scale.set(0.7, 1, 1); g.add(nose);
+
+    // 尾翼
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.2, 0.06), makeMat(0xc0c8d0)), { position: new THREE.Vector3(-1.6, 0.4, 0) }));
+
+    // 水平尾翼
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.06, 1.4), makeMat(0xc0c8d0)), { position: new THREE.Vector3(-1.6, 0.25, 0) }));
+
+    // 机翼
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1, 0.06, 4.2), makeMat(0xc8d0d8, 0, 0, 0.6, 0.3)), { position: new THREE.Vector3(0.2, -0.05, 0) }));
+
+    // 红色涂装条纹
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.08, 0.02), makeMat(0xcc2020)), { position: new THREE.Vector3(0, 0, 0.36) }));
+
+    // 中国航徽（简化圆形）
+    const badge = new THREE.Mesh(new THREE.CircleGeometry(0.15, 12), makeMat(0xcc2020));
+    badge.position.set(-0.5, 0, 0.36);
+    g.add(badge);
+
+    addInteractive(g, 'C919 国产大飞机', '高端制造突破 — 中国首款按照国际适航标准研制的干线民用客机，已投入商业运营');
+    scene.add(g);
+
+    window._airplane = g;
+})();
+
+// ---- 新能源工厂 ----
+function createSmartFactory(x, z, label, desc) {
+    const g = new THREE.Group();
+    g.position.set(x, 0, z);
+
+    // 厂房
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2, 2), makeMat(0x223355, 0x112244, 0.1, 0.5, 0.5));
+    body.position.y = 1; body// shadow g.add(body);
+
+    // 屋顶太阳能板
+    for (let i = 0; i < 4; i++) {
+        const panel = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.04, 0.5), makeMat(0x1a2a44, 0x112255, 0.3, 0.8, 0.1));
+        panel.position.set(-0.7 + i * 0.5, 2.05, 0);
+        g.add(panel);
+    }
+
+    // 窗户发光
+    for (let i = 0; i < 3; i++) {
+        const w = new THREE.Mesh(
+            new THREE.BoxGeometry(0.4, 0.4, 0.04),
+            makeMat(0xffffaa, 0xffff44, 0.5, 0.3, 0.2, true, 0.6)
+        );
+        w.position.set(-0.6 + i * 0.6, 1.2, 1.02);
+        g.add(w);
+    }
+
+    // 光柱
+    const beam = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.8, 4, 8, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.04, side: THREE.DoubleSide, depthWrite: false })
+    );
+    beam.position.y = 4; g.add(beam);
+
+    if (label) addInteractive(g, label, desc);
+    achieveGroup.add(g);
+}
+
+createSmartFactory(5, -4, '新能源智能工厂', '自动化生产线 — 中国光伏、锂电池全球产能占比超 80%，引领全球能源转型');
+createSmartFactory(7, -5, '光伏产业基地', '光伏制造龙头 — 多晶硅、硅片、电池片、组件产量连续多年全球第一');
+
+// ---- 左侧粒子（蓝色科技）----
+const leftParticleCount = 150;
+const leftParticleGeo = new THREE.BufferGeometry();
+const leftPositions = new Float32Array(leftParticleCount * 3);
+for (let i = 0; i < leftParticleCount; i++) {
+    leftPositions[i * 3] = -14 + Math.random() * 16;
+    leftPositions[i * 3 + 1] = Math.random() * 10;
+    leftPositions[i * 3 + 2] = -10 + Math.random() * 10;
+}
+leftParticleGeo.setAttribute('position', new THREE.BufferAttribute(leftPositions, 3));
+const leftParticles = new THREE.Points(leftParticleGeo, new THREE.PointsMaterial({
+    color: 0x3b82f6, size: 0.06, transparent: true, opacity: 0.35
+}));
+scene.add(leftParticles);
+
+// ============================================================
+//  右侧 — 现状面（偏远山村）
+// ============================================================
+const realityGroup = new THREE.Group();
+scene.add(realityGroup);
+
+// 地面（暖色调）
+const realityGround = new THREE.Mesh(
+    new THREE.PlaneGeometry(22, 22),
+    makeMat(0x2a2218, 0, 0, 0.1, 0.95)
+);
+realityGround.rotation.x = -Math.PI / 2;
+realityGround.position.set(6, 0.01, 0);
+realityGround// shadow
+scene.add(realityGround);
+
+// ---- 蜿蜒山路 ----
+(function() {
+    const pts = [];
+    for (let i = 0; i <= 20; i++) {
+        pts.push(new THREE.Vector3(
+            4 + i * 0.7,
+            0.05 + Math.sin(i * 0.4) * 0.4,
+            2 + Math.sin(i * 0.35) * 4
+        ));
+    }
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const tube = new THREE.Mesh(
+        new THREE.TubeGeometry(curve, 50, 0.25, 6, false),
+        makeMat(0x554433, 0, 0, 0.1, 0.95)
+    );
+    tube// shadow
+    realityGroup.add(tube);
+})();
+
+// ---- 乡村校舍 ----
+(function() {
+    const g = new THREE.Group();
+    g.position.set(5, 0, 3);
+
+    // 砖房主体
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.2, 1.8), makeMat(0x886644, 0, 0, 0.05, 0.95));
+    body.position.y = 1.1; body// shadow g.add(body);
+
+    // 屋顶
+    const roofShape = new THREE.Shape();
+    roofShape.moveTo(-1.5, 0); roofShape.lineTo(0, 1); roofShape.lineTo(1.5, 0); roofShape.closePath();
+    const roof = new THREE.Mesh(
+        new THREE.ExtrudeGeometry(roofShape, { depth: 2, bevelEnabled: false }),
+        makeMat(0x4a6040, 0, 0, 0.1, 0.8)
+    );
+    roof.position.set(0, 2.2, -1); roof// shadow g.add(roof);
+
+    // 窗户
+    for (let i = 0; i < 3; i++) {
+        const w = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.04), makeMat(0x88bbdd, 0, 0, 0.2, 0.2, true, 0.5));
+        w.position.set(-0.7 + i * 0.7, 1.4, 0.92); g.add(w);
+    }
+
+    // 门
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.5, 1, 0.04), makeMat(0x553322)), { position: new THREE.Vector3(0, 0.5, 0.92) }));
+
+    // 旗杆
+    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.5, 6), makeMat(0x999999)), { position: new THREE.Vector3(2, 1.25, 0.5) }));
+
+    // 红旗
+    const flagGeo = new THREE.PlaneGeometry(0.5, 0.3);
+    const flag = new THREE.Mesh(flagGeo, makeMat(0xcc2222, 0xcc1111, 0.3, 0.3, 0.4, true, 0.9));
+    flag.position.set(2.25, 2.3, 0.5);
+    g.add(flag);
+
+    addInteractive(g, '乡村校舍', '义务教育全面普及，但部分偏远地区校舍条件仍需改善，师资力量薄弱');
+    realityGroup.add(g);
+})();
+
+// ---- 村卫生室 ----
+(function() {
+    const g = new THREE.Group();
+    g.position.set(9, 0, 5);
+
+    // 白墙
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2, 1.8, 1.8), makeMat(0xe0d8cc, 0, 0, 0.1, 0.9));
+    body.position.y = 0.9; body// shadow g.add(body);
+
+    // 红十字
+    const cv = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.5, 0.04), makeMat(0xdd2222, 0xdd1111, 0.4, 0.3, 0.4));
+    const ch = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.12, 0.04), makeMat(0xdd2222, 0xdd1111, 0.4, 0.3, 0.4));
+    cv.position.set(0, 1.4, 0.92); ch.position.set(0, 1.4, 0.92);
+    g.add(cv); g.add(ch);
+
+    // 窗户
+    const wm = makeMat(0x88bbdd, 0, 0, 0.2, 0.2, true, 0.4);
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.04), wm), { position: new THREE.Vector3(-0.5, 1.1, 0.92) }));
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.04), wm), { position: new THREE.Vector3(0.5, 1.1, 0.92) }));
+
+    // 门
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.9, 0.04), makeMat(0x553322)), { position: new THREE.Vector3(0, 0.45, 0.92) }));
+
+    addInteractive(g, '村卫生室', '基本医疗保障全覆盖，但优质医疗资源仍待提升，基层医疗水平参差不齐');
+    realityGroup.add(g);
+})();
+
+// ---- 乡村民居 ----
+function createVillageHouse(x, z, scale = 1) {
+    const g = new THREE.Group();
+    g.position.set(x, 0, z);
+
+    const body = new THREE.Mesh(
+        new THREE.BoxGeometry(1.6 * scale, 1.5 * scale, 1.5 * scale),
+        makeMat(0x997755, 0, 0, 0.05, 0.95)
+    );
+    body.position.y = 0.75 * scale; body// shadow g.add(body);
+
+    const roof = new THREE.Mesh(
+        new THREE.ConeGeometry(1.3 * scale, 0.8 * scale, 4),
+        makeMat(0x4a6040, 0, 0, 0.1, 0.8)
+    );
+    roof.position.y = 1.9 * scale; roof.rotation.y = Math.PI / 4; roof// shadow g.add(roof);
+
+    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.35 * scale, 0.7 * scale, 0.04), makeMat(0x553322)), { position: new THREE.Vector3(0, 0.35 * scale, 0.77 * scale) }));
+
+    realityGroup.add(g);
+}
+
+createVillageHouse(3, 8, 0.9);
+createVillageHouse(7, 8, 1);
+createVillageHouse(11, 7, 0.8);
+createVillageHouse(13, 9, 1.1);
+
+// ---- 农田 ----
+function createField(x, z, w, d, color = 0x2a5a20) {
+    const f = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, d),
+        makeMat(color, 0, 0, 0.05, 0.95)
+    );
+    f.rotation.x = -Math.PI / 2;
+    f.position.set(x, 0.03, z);
+    f// shadow
+    realityGroup.add(f);
+}
+
+createField(12, 4, 3.5, 2.5, 0x3a6a28);
+createField(14, 7, 3, 3.5, 0x2a5a1a);
+createField(10, 10, 4, 2, 0x4a7a30);
+
+// ---- 树木 ----
+function createTree(x, z, scale = 1) {
+    const g = new THREE.Group();
+    g.position.set(x, 0, z);
+
+    const trunk = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.08 * scale, 0.12 * scale, 1.2 * scale, 6),
+        makeMat(0x553322, 0, 0, 0.05, 0.95)
+    );
+    trunk.position.y = 0.6 * scale; g.add(trunk);
+
+    const canopy = new THREE.Mesh(
+        new THREE.SphereGeometry(0.5 * scale, 8, 8),
+        makeMat(0x2a6a28, 0, 0, 0.05, 0.9)
+    );
+    canopy.position.y = 1.5 * scale; canopy// shadow g.add(canopy);
+
+    // 第二层树冠
+    const canopy2 = new THREE.Mesh(
+        new THREE.SphereGeometry(0.35 * scale, 8, 8),
+        makeMat(0x357a30, 0, 0, 0.05, 0.9)
+    );
+    canopy2.position.set(0.15 * scale, 1.9 * scale, 0.1 * scale); g.add(canopy2);
+
+    realityGroup.add(g);
+}
+
+createTree(2, 1, 1); createTree(4, 4, 1.2); createTree(8, 2, 0.8);
+createTree(11, 3, 1); createTree(13, 2, 0.9); createTree(15, 4, 1.3);
+createTree(16, 1, 0.7); createTree(9, 10, 1.1); createTree(14, 10, 0.8);
+createTree(3, 6, 1); createTree(6, 10, 0.9); createTree(17, 6, 1);
+
+// ---- 右侧粒子（暖色尘埃）----
+const rightParticleCount = 80;
+const rightParticleGeo = new THREE.BufferGeometry();
+const rightPositions = new Float32Array(rightParticleCount * 3);
+for (let i = 0; i < rightParticleCount; i++) {
+    rightPositions[i * 3] = 3 + Math.random() * 14;
+    rightPositions[i * 3 + 1] = Math.random() * 5;
+    rightPositions[i * 3 + 2] = -3 + Math.random() * 14;
+}
+rightParticleGeo.setAttribute('position', new THREE.BufferAttribute(rightPositions, 3));
+const rightParticles = new THREE.Points(rightParticleGeo, new THREE.PointsMaterial({
+    color: 0xd4944a, size: 0.05, transparent: true, opacity: 0.2
+}));
+scene.add(rightParticles);
+
+// ---- 水面（右侧小河）----
+const waterGeo = new THREE.PlaneGeometry(12, 0.8);
+const waterMat = new THREE.MeshStandardMaterial({
+    color: 0x224466, transparent: true, opacity: 0.5,
+    metalness: 0.8, roughness: 0.1
+});
+const water = new THREE.Mesh(waterGeo, waterMat);
+water.rotation.x = -Math.PI / 2;
+water.position.set(8, 0.04, -1);
+scene.add(water);
+
+// ============================================================
+//  鼠标交互
+// ============================================================
+let hoveredObject = null;
+
+window.addEventListener('mousemove', (e) => {
+    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(interactableObjects, true);
+
+    if (hits.length > 0) {
+        let obj = hits[0].object;
+        while (obj && !obj.userData.label) obj = obj.parent;
+
+        if (obj && obj.userData.label) {
+            if (hoveredObject !== obj) {
+                if (hoveredObject) {
+                    hoveredObject.traverse(c => {
+                        if (c.isMesh && c.userData._origEI !== undefined) {
+                            if (c.material.emissive) c.material.emissiveIntensity = c.userData._origEI;
+                        }
+                    });
+                }
+                hoveredObject = obj;
+                tooltipTitle.textContent = obj.userData.label;
+                tooltipBody.textContent = obj.userData.desc || '';
+                tooltip.classList.add('visible');
+
+                obj.traverse(c => {
+                    if (c.isMesh && c.material && c.material.emissive) {
+                        c.userData._origEI = c.material.emissiveIntensity;
+                        c.material.emissiveIntensity = Math.max(c.material.emissiveIntensity, 0.7);
+                    }
+                });
+            }
+            const tx = e.clientX + 18;
+            const ty = e.clientY - 8;
+            tooltip.style.left = Math.min(tx, window.innerWidth - 320) + 'px';
+            tooltip.style.top = ty + 'px';
+        } else {
+            hideTooltip();
+        }
+    } else {
+        hideTooltip();
+    }
+});
+
+function hideTooltip() {
+    if (hoveredObject) {
+        hoveredObject.traverse(c => {
+            if (c.isMesh && c.material && c.userData._origEI !== undefined) {
+                if (c.material.emissive) c.material.emissiveIntensity = c.userData._origEI;
+            }
+        });
+        hoveredObject = null;
+    }
+    tooltip.classList.remove('visible');
+}
+
+// ============================================================
+//  动画循环
+// ============================================================
+const clock = new THREE.Clock();
+
+function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    // 飞机飞行
+    if (window._airplane) {
+        const a = t * 0.12;
+        window._airplane.position.set(
+            Math.cos(a) * 9 - 2,
+            7 + Math.sin(t * 0.4) * 0.4,
+            Math.sin(a) * 4 - 6
+        );
+        window._airplane.rotation.y = -a + Math.PI / 2;
+        window._airplane.rotation.z = Math.sin(t * 0.6) * 0.03;
+    }
+
+    // 粒子上升
+    const lp = leftParticles.geometry.attributes.position.array;
+    for (let i = 0; i < leftParticleCount; i++) {
+        lp[i * 3 + 1] += 0.008;
+        if (lp[i * 3 + 1] > 10) lp[i * 3 + 1] = 0;
+    }
+    leftParticles.geometry.attributes.position.needsUpdate = true;
+
+    const rp = rightParticles.geometry.attributes.position.array;
+    for (let i = 0; i < rightParticleCount; i++) {
+        rp[i * 3 + 1] += 0.005;
+        rp[i * 3] += Math.sin(t + i) * 0.002;
+        if (rp[i * 3 + 1] > 5) rp[i * 3 + 1] = 0;
+    }
+    rightParticles.geometry.attributes.position.needsUpdate = true;
+
+    // 底座光环旋转
+    ring.rotation.z = t * 0.2;
+
+    // 点光源呼吸
+    bluePoint.intensity = 2 + Math.sin(t * 1.5) * 0.4;
+    warmPoint.intensity = 1.2 + Math.sin(t * 1.2 + 1) * 0.3;
+
+    // 水面波动
+    if (water) {
+        water.position.y = 0.04 + Math.sin(t * 0.8) * 0.02;
+    }
+
+    // 红旗飘动
+    realityGroup.traverse(c => {
+        if (c.isMesh && c.geometry.type === 'PlaneGeometry' && c.material.color.r > 0.7 && c.position.x === 2.25) {
+            c.rotation.y = Math.sin(t * 3) * 0.2;
+        }
+    });
+
+    // 相机控制
+    if (useOrbitControls) {
+        orbitControls.update();
+    } else {
+        // 基础鼠标旋转
+        camera.position.x = mouseRotate.dist * Math.sin(mouseRotate.phi) * Math.sin(mouseRotate.theta);
+        camera.position.y = mouseRotate.dist * Math.cos(mouseRotate.phi);
+        camera.position.z = mouseRotate.dist * Math.sin(mouseRotate.phi) * Math.cos(mouseRotate.theta);
+        camera.lookAt(0, 0, 0);
+    }
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// ---- 窗口自适应 ----
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ---- 全局错误捕获 ----
+window.addEventListener('error', (e) => {
+    console.error('沙盘加载错误:', e.message);
+});
+</script>
+</body>
+</html>

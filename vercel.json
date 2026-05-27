@@ -1,3 +1,7 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/sandtable", "destination": "/sandtable/index.html" },
+    { "source": "/sandtable/:path*", "destination": "/sandtable/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

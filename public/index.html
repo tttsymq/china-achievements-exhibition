@@ -42,7 +42,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen font-sans">
     <!-- 首页 -->
-    <div id="home-page" class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-china-red to-tech-blue px-6 page-transition">
+    <div id="home-page" class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-china-red to-tech-blue px-6 py-8 overflow-y-auto page-transition">
         <div class="text-center">
             <div class="w-20 h-1 bg-white mx-auto mb-6 rounded-full opacity-80"></div>
             <h1 class="text-[clamp(1.8rem,5vw,2.5rem)] font-bold text-white mb-3 leading-tight">
@@ -59,12 +59,12 @@
                      class="block">
             </div>
             <p class="text-white/80 text-sm mb-6">扫码进入展厅</p>
-            <button onclick="showPage('exhibition-page')" 
+            <button onclick="showPage('exhibition-page')"
                     class="bg-white text-tech-blue font-semibold px-10 py-4 rounded-full text-lg hover:bg-gray-100 active:scale-95 transition-all duration-200 shadow-lg">
                 点击进入展厅
             </button>
         </div>
-        <div class="absolute bottom-8 text-white/60 text-sm">
+        <div class="mt-8 text-white/60 text-sm">
             中国科技成就数字展厅
         </div>
     </div>

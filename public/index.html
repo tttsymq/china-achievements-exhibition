@@ -48,9 +48,17 @@
             <h1 class="text-[clamp(1.8rem,5vw,2.5rem)] font-bold text-white mb-3 leading-tight">
                 领跑世界的
             </h1>
-            <h2 class="text-[clamp(2rem,6vw,3rem)] font-bold text-white mb-12 leading-tight">
+            <h2 class="text-[clamp(2rem,6vw,3rem)] font-bold text-white mb-8 leading-tight">
                 中国成就
             </h2>
+            <div class="bg-white p-3 rounded-xl shadow-lg mb-8 inline-block">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=http://212.64.29.147"
+                     alt="展厅二维码"
+                     width="180"
+                     height="180"
+                     class="block">
+            </div>
+            <p class="text-white/80 text-sm mb-6">扫码进入展厅</p>
             <button onclick="showPage('exhibition-page')" 
                     class="bg-white text-tech-blue font-semibold px-10 py-4 rounded-full text-lg hover:bg-gray-100 active:scale-95 transition-all duration-200 shadow-lg">
                 点击进入展厅
@@ -69,7 +77,7 @@
                 <p class="text-gray-500">点击展品查看详情</p>
             </div>
             
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-2 gap-4">
                 <!-- 展品1：人造太阳 -->
                 <div onclick="showPage('detail-1')" 
                      class="bg-white rounded-2xl overflow-hidden card-shadow cursor-pointer active:scale-[0.98] transition-transform">
@@ -89,7 +97,7 @@
                 <div onclick="showPage('detail-2')" 
                      class="bg-white rounded-2xl overflow-hidden card-shadow cursor-pointer active:scale-[0.98] transition-transform">
                     <div class="h-44 overflow-hidden">
-                        <img src="images/hydrogen.png" alt="盐穴储氢工程" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+                        <img src="images/hydrogen.jpg" alt="盐穴储氢工程" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
                     </div>
                     <div class="p-5">
                         <div class="flex items-center gap-2 mb-2">
@@ -104,7 +112,7 @@
                 <div onclick="showPage('detail-3')" 
                      class="bg-white rounded-2xl overflow-hidden card-shadow cursor-pointer active:scale-[0.98] transition-transform">
                     <div class="h-44 overflow-hidden">
-                        <img src="images/swap.png" alt="新能源换电技术" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+                        <img src="images/swap.jpg" alt="新能源换电技术" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
                     </div>
                     <div class="p-5">
                         <div class="flex items-center gap-2 mb-2">
@@ -130,28 +138,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 二维码区域 -->
-            <!-- 
-                【高清二维码生成方式说明】
-                如需保存或打印高清二维码，请访问以下链接：
-                https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=展厅访问链接
-                将 size 参数改为 1000x1000 即可获得1000x1000像素的高清二维码
-            -->
-            <div class="mt-8 mb-6">
-                <div class="bg-white rounded-2xl p-6 card-shadow">
-                    <div class="flex flex-col items-center">
-                        <div class="bg-white p-3 rounded-xl shadow-sm">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=http://212.64.29.147" 
-                                 alt="展厅二维码" 
-                                 width="200" 
-                                 height="200"
-                                 class="block">
-                        </div>
-                        <p class="mt-4 text-gray-600 text-sm font-medium">扫码进入展厅</p>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -173,7 +159,13 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4">人造太阳突破</h2>
             <div class="w-12 h-1 bg-china-red rounded-full mb-5"></div>
             <p class="text-gray-600 leading-relaxed text-base">
-                中国EAST装置实现1.2亿摄氏度等离子体运行1056秒，创造世界纪录。这一突破为可控核聚变商业化奠定关键基础，标志我国在"人造太阳"领域领跑全球。
+                "人造太阳"是模拟太阳核聚变反应的可控核聚变装置，目标是提供清洁、安全、近乎无限的能源。我国核心装置包括EAST（东方超环）与中国环流三号，均达国际领先水平。
+            </p>
+            <p class="text-gray-600 leading-relaxed text-base mt-4">
+                2025年1月，EAST实现1亿摄氏度、1066秒长脉冲高约束等离子体运行，创世界纪录，是全球唯一实现"亿度千秒"稳态运行的装置。2025年3月，中国环流三号达成双亿度突破：离子温度1.17亿摄氏度、电子温度1.6亿摄氏度，进入燃烧实验阶段。
+            </p>
+            <p class="text-gray-600 leading-relaxed text-base mt-4">
+                核聚变原料可从海水提取，1升海水等效300升汽油能量，产物为氦气，零碳排放。我国"人造太阳"研究五创世界纪录，为未来聚变堆建设奠定基础，助力"双碳"目标与能源自主。
             </p>
         </div>
     </div>
@@ -182,7 +174,7 @@
     <div id="detail-2" class="min-h-screen bg-white hidden page-transition">
         <div class="relative">
             <div class="h-64 overflow-hidden">
-                <img src="images/hydrogen.png" alt="盐穴储氢工程" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+                <img src="images/hydrogen.jpg" alt="盐穴储氢工程" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
             </div>
             <button onclick="showPage('exhibition-page')" 
                     class="absolute top-4 left-4 bg-white/90 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
@@ -196,7 +188,13 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4">亚洲最大盐穴储氢工程</h2>
             <div class="w-12 h-1 bg-tech-blue rounded-full mb-5"></div>
             <p class="text-gray-600 leading-relaxed text-base">
-                我国建成亚洲最大盐穴地下储氢库，利用地下盐穴实现大规模高压储氢，单库容量超百万立方米。该技术突破氢能存储瓶颈，为氢能产业规模化发展提供核心支撑。
+                盐穴储氢是利用地下盐矿溶腔储存氢气的大规模储能技术，解决氢能储运瓶颈。2026年4月25日，我国首个百万方级盐穴储氢示范工程在河南平顶山投产，为亚洲首座，关键设备100%国产化。
+            </p>
+            <p class="text-gray-600 leading-relaxed text-base mt-4">
+                工程由中科院武汉岩土所与中国平煤神马集团共建，钻井深度1418米，盐穴水溶体积超3万立方米，可储150万标准立方米氢气。攻克层状盐岩密封、临氢腐蚀、高压密封等难题，首创"地表—井筒—腔体"一体化安全监测系统。
+            </p>
+            <p class="text-gray-600 leading-relaxed text-base mt-4">
+                该工程补齐氢能大规模、低成本储能短板，标志我国氢能"制—储—输—用"进入产业化新阶段，支撑新能源消纳与工业脱碳，助力能源结构转型。
             </p>
         </div>
     </div>
@@ -205,7 +203,7 @@
     <div id="detail-3" class="min-h-screen bg-white hidden page-transition">
         <div class="relative">
             <div class="h-64 overflow-hidden">
-                <img src="images/swap.png" alt="新能源换电技术" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
+                <img src="images/swap.jpg" alt="新能源换电技术" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentElement.classList.add('img-fallback');this.style.display='none';">
             </div>
             <button onclick="showPage('exhibition-page')" 
                     class="absolute top-4 left-4 bg-white/90 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
@@ -219,7 +217,13 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4">国产新能源换电技术</h2>
             <div class="w-12 h-1 bg-green-600 rounded-full mb-5"></div>
             <p class="text-gray-600 leading-relaxed text-base">
-                中国车企首创3分钟极速换电技术，全自动机械臂完成电池更换，比加油更快捷。换电站网络覆盖全国，实现车电分离商业模式，破解新能源汽车补能焦虑。
+                换电技术通过快速更换电池实现补能，效率媲美加油，解决充电慢、里程焦虑痛点。我国换电技术全球领先，截至2026年5月，全国换电站超6000座，覆盖99%地级市，形成全球最大换电网络。
+            </p>
+            <p class="text-gray-600 leading-relaxed text-base mt-4">
+                头部企业快速布局：蔚来建成3839座换电站（高速站1035座）；宁德时代时代电服建成1470座，计划2026年底达4000座。2026年2月，我国完成第1亿次换电，平均每0.86秒1辆，补能体验成熟。
+            </p>
+            <p class="text-gray-600 leading-relaxed text-base mt-4">
+                技术与标准突破：宁德时代发布75#标准化换电块，推进"八横十纵"换电绿网；行业发布统一接口标准，20+主流车企入局，推动跨品牌兼容。换电助力电网削峰填谷，支撑新能源汽车普及与能源转型。
             </p>
         </div>
     </div>
@@ -242,7 +246,13 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4">国产大型邮轮"爱达·花城号"</h2>
             <div class="w-12 h-1 bg-purple-600 rounded-full mb-5"></div>
             <p class="text-gray-600 leading-relaxed text-base">
-                首艘国产大型邮轮"爱达·花城号"成功交付，总吨位14.2万吨，可载客6500余人。该突破标志我国成为全球第五个可建造大型邮轮的国家，实现造船工业皇冠最后一颗明珠。
+                "爱达·花城号"是我国第二艘国产大型邮轮，由中国船舶集团上海外高桥造船建造，2026年5月试航凯旋，11月交付，将以广州南沙为母港运营。
+            </p>
+            <p class="text-gray-600 leading-relaxed text-base mt-4">
+                邮轮全长341米，总吨位14.19万吨，拥有2130间客房，满载载客5232人。全船设26间餐厅酒吧、千人大剧院、购物中心、水疗中心等，内饰以"花卉"为主题，融入岭南文化元素。
+            </p>
+            <p class="text-gray-600 leading-relaxed text-base mt-4">
+                相比首制船"爱达·魔都号"，建造效率提升20%，大宗材料与关键工程包国产化率显著提高，产业链自主可控能力增强。一次试航完成149项验证，标志我国大型邮轮设计建造与管理体系成熟，打破国外长期垄断，跻身全球少数能自主建造大型邮轮的国家之列。
             </p>
         </div>
     </div>

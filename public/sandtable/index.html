@@ -142,6 +142,11 @@
             #hint { display: none; }
             #marquee-bar { padding: 4px 0 8px; }
             .mq-item { font-size: 0.6rem; padding: 4px 12px; }
+            /* 覆盖 fi 动画对 transform 的影响 */
+            .data-panel.achieve.fi { animation-name: fiA; }
+            .data-panel.reality.fi { animation-name: fiR; }
+            @keyframes fiA { from{opacity:0;transform:translateY(24px) translateX(-120%)} to{opacity:1;transform:translateY(0) translateX(-120%)} }
+            @keyframes fiR { from{opacity:0;transform:translateY(24px) translateX(120%)} to{opacity:1;transform:translateY(0) translateX(120%)} }
         }
 
         @keyframes fi { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }

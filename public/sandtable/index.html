@@ -240,7 +240,7 @@
         /* ================================================================
          *  2. 相机控制器（纯手写，无外部依赖）
          * ================================================================ */
-        var mr = { on:false, lx:0, ly:0, th:0, ph:Math.PI/3, d: innerWidth<768 ? 35 : 22 };
+        var mr = { on:false, lx:0, ly:0, th:0, ph:Math.PI/3, d: innerWidth<768 ? 45 : 22 };
         var cvs = renderer.domElement;
         cvs.addEventListener('mousedown', function(e){ mr.on=true; mr.lx=e.clientX; mr.ly=e.clientY; });
         cvs.addEventListener('touchstart', function(e){
@@ -256,13 +256,13 @@
             }
             if(e.touches.length===2 && mr.pinch){
                 var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-                mr.d=Math.max(8,Math.min(55,mr.d+(mr.pinchD-d)*0.05));
+                mr.d=Math.max(8,Math.min(100,mr.d+(mr.pinchD-d)*0.05));
                 mr.pinchD=d;
             }
         }, {passive:true});
         addEventListener('mouseup', function(){ mr.on=false; });
         addEventListener('touchend', function(){ mr.on=false; mr.pinch=false; });
-        cvs.addEventListener('wheel', function(e){ mr.d=Math.max(8,Math.min(55,mr.d+e.deltaY*0.05)); }, {passive:true});
+        cvs.addEventListener('wheel', function(e){ mr.d=Math.max(8,Math.min(100,mr.d+e.deltaY*0.05)); }, {passive:true});
 
         /* ================================================================
          *  3. 灯光
@@ -1162,7 +1162,7 @@
          * ================================================================ */
         // 重置视角
         document.getElementById('btn-reset').addEventListener('click', function(){
-            mr.th = 0; mr.ph = Math.PI/3; mr.d = innerWidth<768 ? 35 : 22;
+            mr.th = 0; mr.ph = Math.PI/3; mr.d = innerWidth<768 ? 45 : 22;
         });
 
         // 自动旋转
@@ -1232,7 +1232,7 @@
 
         // 双击重置视角
         cvs.addEventListener('dblclick', function() {
-            mr.th = 0; mr.ph = Math.PI/3; mr.d = 22;
+            mr.th = 0; mr.ph = Math.PI/3; mr.d = innerWidth<768 ? 45 : 22;
         });
 
         hideL();

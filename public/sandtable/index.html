@@ -90,8 +90,20 @@
             opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; max-width: 320px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.5); backdrop-filter: blur(12px); transform: translateY(4px); }
         #tooltip.visible { opacity: 1; transform: translateY(0); }
+        #tooltip.achieve {
+            border-color: rgba(59,130,246,0.4);
+            background: linear-gradient(160deg, rgba(10,20,50,0.95), rgba(6,10,30,0.95));
+            box-shadow: 0 8px 32px rgba(59,130,246,0.15);
+        }
+        #tooltip.reality {
+            border-color: rgba(212,148,74,0.4);
+            background: linear-gradient(160deg, rgba(28,18,8,0.95), rgba(16,12,6,0.95));
+            box-shadow: 0 8px 32px rgba(212,148,74,0.15);
+        }
         #tooltip .tt { font-family: var(--font-serif); font-weight: 700; font-size: 0.88rem;
-            margin-bottom: 4px; color: #80b0ff; }
+            margin-bottom: 4px; }
+        #tooltip.achieve .tt { color: #80b0ff; }
+        #tooltip.reality .tt { color: #d4944a; }
         #tooltip .tb { color: var(--text-secondary); font-weight: 300; font-size: 0.72rem; }
         #tooltip .src { margin-top: 6px; font-size: 0.65rem; color: rgba(255,255,255,0.25); font-style: italic; }
 
@@ -290,8 +302,8 @@
             if (em) { m.emissive = new THREE.Color(em); m.emissiveIntensity = ei||0; }
             return m;
         }
-        function addIO(obj, title, body, source) {
-            obj.userData = { title: title, body: body, source: source };
+        function addIO(obj, title, body, source, side) {
+            obj.userData = { title: title, body: body, source: source, side: side || 'achieve' };
             io.push(obj);
         }
         var io = [];
@@ -655,7 +667,7 @@
 
                 addIO(g, '绿色能源下乡',
                     '2024 年农村户用光伏装机超 30 GW | 带动农民增收超 100 亿元',
-                    '数据来源：国家能源局');
+                    '数据来源：国家能源局', 'reality');
                 rGrp.add(g);
             }
         })();
@@ -701,7 +713,7 @@
 
             addIO(g, '乡村教育提升工程',
                 '义务教育巩固率 95.9% | 西部师资缺口超 5 万人 | 乡村小规模学校近 10 万所',
-                '数据来源：教育部');
+                '数据来源：教育部', 'reality');
             rGrp.add(g);
         })();
 
@@ -725,7 +737,7 @@
 
             addIO(g, '基本医保全覆盖',
                 '参保率超 95% | 西部地区每千人床位为东部 70% | 基层医疗能力持续提升中',
-                '数据来源：国家医疗保障局');
+                '数据来源：国家医疗保障局', 'reality');
             rGrp.add(g);
         })();
 
@@ -808,7 +820,7 @@
             bench.position.set(1.5, 0.15, 0.3); g.add(bench);
             addIO(g, '传统村落文化',
                 '古树名木：约 100 万株 | 传统村落：超 8000 个受保护 | 乡村文化传承',
-                '数据来源：住房和城乡建设部');
+                '数据来源：住房和城乡建设部', 'reality');
             rGrp.add(g);
         })();
 
@@ -832,7 +844,7 @@
             pf.position.set(-1.2, 3.1, 0); g.add(pf); window._pf = pf;
             addIO(g, '乡村振兴成果',
                 '脱贫人口：近 1 亿人 | 2832 个贫困县全部摘帽 | 乡村振兴全面推进',
-                '数据来源：国务院扶贫办');
+                '数据来源：国务院扶贫办', 'reality');
             rGrp.add(g);
         })();
 
@@ -853,7 +865,7 @@
             splash.position.set(2.3, 0.3, 0); g.add(splash); window._splash = splash;
             addIO(g, '农村饮水安全工程',
                 '农村自来水普及率超 90% | 水利设施覆盖 4.4 亿农村人口',
-                '数据来源：水利部');
+                '数据来源：水利部', 'reality');
             rGrp.add(g);
         })();
 
@@ -874,7 +886,7 @@
             pkg2.position.set(1.3, 0.1, 0.9); g.add(pkg2);
             addIO(g, '农村电商发展',
                 '农村网民规模超 3 亿 | 农产品网络零售额超 6000 亿元 | 快递进村覆盖率超 90%',
-                '数据来源：商务部、农业农村部');
+                '数据来源：商务部、农业农村部', 'reality');
             rGrp.add(g);
         })();
 
@@ -898,7 +910,7 @@
             }
             addIO(g, '畜牧业发展',
                 '肉类总产量超 9200 万吨 | 牛羊存栏量持续增长 | 畜牧产业助力乡村振兴',
-                '数据来源：农业农村部');
+                '数据来源：农业农村部', 'reality');
             rGrp.add(g);
             window._herd = g;
         })();
@@ -922,7 +934,7 @@
             sd.position.set(0.3, 0.6, 1.02); g.add(sd);
             addIO(g, '乡村商业服务',
                 '村级综合服务站点超 30 万个 | 农村商业体系不断完善',
-                '数据来源：商务部');
+                '数据来源：商务部', 'reality');
             rGrp.add(g);
         })();
 
@@ -939,7 +951,7 @@
             mw.position.set(0, 1.1, 0.92); g.add(mw);
             addIO(g, '农村危房改造',
                 '累计改造农村危房超 2000 万户 | 住房安全有保障 | 乡村建设持续推进',
-                '数据来源：住房和城乡建设部');
+                '数据来源：住房和城乡建设部', 'reality');
             rGrp.add(g);
         })();
 
@@ -961,7 +973,7 @@
             }
             addIO(g, '农村清洁能源',
                 '农村户用沼气池超 3000 万口 | 太阳能热水器普及率持续提升 | 清洁能源助力低碳乡村',
-                '数据来源：农业农村部');
+                '数据来源：农业农村部', 'reality');
             rGrp.add(g);
         })();
 
@@ -988,7 +1000,7 @@
             mouse.y = -(e.clientY / innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             var hits = raycaster.intersectObjects(io, true);
-            if (hits.length > 0) {
+                    if (hits.length > 0) {
                 var obj = hits[0].object;
                 while(obj && !obj.userData.title) obj = obj.parent;
                 if (obj && obj.userData.title) {
@@ -1000,6 +1012,8 @@
                         tooltipT.textContent = obj.userData.title;
                         tooltipB.textContent = obj.userData.body || '';
                         tooltipS.textContent = obj.userData.source || '';
+                        tooltipEl.classList.remove('achieve', 'reality');
+                        tooltipEl.classList.add(obj.userData.side || 'achieve');
                         tooltipEl.classList.add('visible');
                         obj.traverse(function(c){
                             if(c.isMesh&&c.material&&c.material.emissive){
@@ -1019,7 +1033,7 @@
                 hovered.traverse(function(c){ if(c.isMesh&&c.material&&c.userData._oei!==undefined&&c.material.emissive) c.material.emissiveIntensity=c.userData._oei; });
                 hovered = null;
             }
-            tooltipEl.classList.remove('visible');
+            tooltipEl.classList.remove('visible', 'achieve', 'reality');
         }
 
         /* ================================================================

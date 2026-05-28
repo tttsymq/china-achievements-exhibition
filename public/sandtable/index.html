@@ -101,7 +101,7 @@
             pointer-events: none; }
 
         /* ===== 控件面板 ===== */
-        #controls { position: fixed; top: 14px; right: 14px; z-index: 15; display: flex;
+        #controls { position: fixed; bottom: 14px; right: 14px; z-index: 15; display: flex;
             flex-direction: column; gap: 8px; }
         .ctrl-btn { background: rgba(10,16,30,0.7); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 10px; padding: 8px 14px; color: var(--text-secondary); font-size: 0.72rem;
@@ -137,7 +137,7 @@
             .data-panel.achieve { left: 8px; transform: translateX(-120%); opacity: 0; }
             .data-panel.reality { right: 8px; transform: translateX(120%); opacity: 0; }
             .data-panel.expanded { transform: translateX(0) !important; opacity: 1 !important; }
-            #controls { top: 8px; right: 8px; gap: 5px; }
+            #controls { bottom: 48px; right: 8px; gap: 5px; }
             .ctrl-btn { padding: 6px 10px; font-size: 0.65rem; border-radius: 8px; min-height: 36px; }
             #hint { display: none; }
             #marquee-bar { padding: 4px 0 8px; }
@@ -203,8 +203,6 @@
 
 <!-- 控件 -->
 <div id="controls">
-    <button class="ctrl-btn" id="btn-zoom-in">＋</button>
-    <button class="ctrl-btn" id="btn-zoom-out">－</button>
     <button class="ctrl-btn" id="btn-reset">重置</button>
     <button class="ctrl-btn" id="btn-auto">自动旋转</button>
     <button class="ctrl-btn" id="btn-night">夜间模式</button>
@@ -242,14 +240,28 @@
         /* ================================================================
          *  2. 相机控制器（纯手写，无外部依赖）
          * ================================================================ */
-        var mr = { on:false, lx:0, ly:0, th:0, ph:Math.PI/3, d:22 };
+        var mr = { on:false, lx:0, ly:0, th:0, ph:Math.PI/3, d: innerWidth<768 ? 35 : 22 };
         var cvs = renderer.domElement;
         cvs.addEventListener('mousedown', function(e){ mr.on=true; mr.lx=e.clientX; mr.ly=e.clientY; });
-        cvs.addEventListener('touchstart', function(e){ if(e.touches.length===1){mr.on=true;mr.lx=e.touches[0].clientX;mr.ly=e.touches[0].clientY;} }, {passive:true});
+        cvs.addEventListener('touchstart', function(e){
+            if(e.touches.length===1){ mr.on=true; mr.lx=e.touches[0].clientX; mr.ly=e.touches[0].clientY; }
+            if(e.touches.length===2){ mr.pinch=true; mr.pinchD=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); }
+        }, {passive:true});
         cvs.addEventListener('mousemove', function(e){ if(!mr.on) return; mr.th-=(e.clientX-mr.lx)*0.005; mr.ph=Math.max(0.2,Math.min(Math.PI/2.1,mr.ph+(e.clientY-mr.ly)*0.005)); mr.lx=e.clientX;mr.ly=e.clientY; });
-        cvs.addEventListener('touchmove', function(e){ if(!mr.on||e.touches.length!==1) return; mr.th-=(e.touches[0].clientX-mr.lx)*0.005; mr.ph=Math.max(0.2,Math.min(Math.PI/2.1,mr.ph+(e.touches[0].clientY-mr.ly)*0.005)); mr.lx=e.touches[0].clientX;mr.ly=e.touches[0].clientY; }, {passive:true});
+        cvs.addEventListener('touchmove', function(e){
+            if(e.touches.length===1 && mr.on){
+                mr.th-=(e.touches[0].clientX-mr.lx)*0.005;
+                mr.ph=Math.max(0.2,Math.min(Math.PI/2.1,mr.ph+(e.touches[0].clientY-mr.ly)*0.005));
+                mr.lx=e.touches[0].clientX; mr.ly=e.touches[0].clientY;
+            }
+            if(e.touches.length===2 && mr.pinch){
+                var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+                mr.d=Math.max(8,Math.min(55,mr.d+(mr.pinchD-d)*0.05));
+                mr.pinchD=d;
+            }
+        }, {passive:true});
         addEventListener('mouseup', function(){ mr.on=false; });
-        addEventListener('touchend', function(){ mr.on=false; });
+        addEventListener('touchend', function(){ mr.on=false; mr.pinch=false; });
         cvs.addEventListener('wheel', function(e){ mr.d=Math.max(8,Math.min(55,mr.d+e.deltaY*0.05)); }, {passive:true});
 
         /* ================================================================
@@ -1150,15 +1162,7 @@
          * ================================================================ */
         // 重置视角
         document.getElementById('btn-reset').addEventListener('click', function(){
-            mr.th = 0; mr.ph = Math.PI/3; mr.d = 22;
-        });
-
-        // 缩放按钮
-        document.getElementById('btn-zoom-in').addEventListener('click', function(){
-            mr.d = Math.max(8, mr.d - 3);
-        });
-        document.getElementById('btn-zoom-out').addEventListener('click', function(){
-            mr.d = Math.min(55, mr.d + 3);
+            mr.th = 0; mr.ph = Math.PI/3; mr.d = innerWidth<768 ? 35 : 22;
         });
 
         // 自动旋转

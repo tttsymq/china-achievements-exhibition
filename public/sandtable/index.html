@@ -22,7 +22,7 @@
             font-family: var(--font-sans); color: var(--text-primary); }
 
         /* ===== 3D 画布 ===== */
-        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; }
 
         /* ===== 顶部标题 ===== */
         #header { position: fixed; top: 0; left: 0; right: 0; z-index: 10; text-align: center;
@@ -204,7 +204,7 @@
 <!-- 控件 -->
 <div id="controls">
     <button class="ctrl-btn" id="btn-reset">重置</button>
-    <button class="ctrl-btn" id="btn-auto">自动旋转</button>
+    <button class="ctrl-btn active" id="btn-auto">暂停旋转</button>
     <button class="ctrl-btn" id="btn-night">夜间模式</button>
 </div>
 
@@ -240,15 +240,16 @@
         /* ================================================================
          *  2. 相机控制器（纯手写，无外部依赖）
          * ================================================================ */
-        var mr = { on:false, lx:0, ly:0, th:0, ph:Math.PI/3, d: innerWidth<768 ? 45 : 22 };
+        var mr = { on:false, pinch:false, lx:0, ly:0, th:0, ph:Math.PI/3, d: innerWidth<768 ? 45 : 22 };
         var cvs = renderer.domElement;
         cvs.addEventListener('mousedown', function(e){ mr.on=true; mr.lx=e.clientX; mr.ly=e.clientY; });
         cvs.addEventListener('touchstart', function(e){
             if(e.touches.length===1){ mr.on=true; mr.lx=e.touches[0].clientX; mr.ly=e.touches[0].clientY; }
             if(e.touches.length===2){ mr.pinch=true; mr.pinchD=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); }
-        }, {passive:true});
+        });
         cvs.addEventListener('mousemove', function(e){ if(!mr.on) return; mr.th-=(e.clientX-mr.lx)*0.005; mr.ph=Math.max(0.2,Math.min(Math.PI/2.1,mr.ph+(e.clientY-mr.ly)*0.005)); mr.lx=e.clientX;mr.ly=e.clientY; });
         cvs.addEventListener('touchmove', function(e){
+            e.preventDefault();
             if(e.touches.length===1 && mr.on){
                 mr.th-=(e.touches[0].clientX-mr.lx)*0.005;
                 mr.ph=Math.max(0.2,Math.min(Math.PI/2.1,mr.ph+(e.touches[0].clientY-mr.ly)*0.005));
@@ -1048,7 +1049,7 @@
          *  10. 动画循环
          * ================================================================ */
         var clock = new THREE.Clock();
-        var autoRotate = false;
+        var autoRotate = true;
 
         function animate() {
             requestAnimationFrame(animate);

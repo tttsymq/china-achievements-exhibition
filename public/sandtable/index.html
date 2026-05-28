@@ -36,7 +36,7 @@
         /* ===== 场景标签 ===== */
         .scene-tag { position: fixed; top: 80px; z-index: 10; padding: 6px 18px;
             border-radius: 6px; font-size: 0.78rem; font-weight: 600; letter-spacing: 2px;
-            pointer-events: none; }
+            pointer-events: none; user-select: none; transition: all 0.25s ease; }
         .scene-tag.achieve { left: clamp(12px, 2vw, 40px);
             background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); color: var(--accent-blue); }
         .scene-tag.reality { right: clamp(12px, 2vw, 40px);
@@ -46,7 +46,8 @@
         .data-panel { position: fixed; top: 110px; z-index: 10; width: clamp(200px, 16vw, 290px);
             padding: 16px 14px; border-radius: 14px; pointer-events: auto;
             backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,0.06); }
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: transform 0.35s ease, opacity 0.3s ease; }
         .data-panel.achieve { left: clamp(10px, 1.5vw, 30px);
             background: linear-gradient(160deg, rgba(8,16,36,0.9), rgba(6,10,22,0.95));
             box-shadow: 0 0 30px rgba(59,130,246,0.06); }
@@ -122,6 +123,26 @@
             background: linear-gradient(90deg, var(--accent-blue), var(--accent-gold));
             border-radius: 1px; animation: ld 2s ease-in-out forwards; }
         @keyframes ld { 0%{width:0%} 100%{width:100%} }
+
+        /* ===== 移动端适配 ===== */
+        @media (max-width: 768px) {
+            #header h1 { font-size: 1.1rem; letter-spacing: 4px; }
+            #header .subtitle { font-size: 0.55rem; }
+            .scene-tag { pointer-events: auto; cursor: pointer; font-size: 0.65rem; padding: 5px 12px; }
+            .scene-tag.achieve { left: 8px; }
+            .scene-tag.reality { right: 8px; }
+            .scene-tag::after { content: ' ▾'; font-size: 0.6rem; }
+            .scene-tag.expanded::after { content: ' ▴'; }
+            .data-panel { width: min(88vw, 320px); max-height: 65vh; overflow-y: auto; }
+            .data-panel.achieve { left: 8px; transform: translateX(-120%); opacity: 0; }
+            .data-panel.reality { right: 8px; transform: translateX(120%); opacity: 0; }
+            .data-panel.expanded { transform: translateX(0) !important; opacity: 1 !important; }
+            #controls { top: 8px; right: 8px; gap: 5px; }
+            .ctrl-btn { padding: 6px 10px; font-size: 0.65rem; border-radius: 8px; min-height: 36px; }
+            #hint { display: none; }
+            #marquee-bar { padding: 4px 0 8px; }
+            .mq-item { font-size: 0.6rem; padding: 4px 12px; }
+        }
 
         @keyframes fi { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
         .fi { opacity: 0; animation: fi 0.7s ease forwards; }
@@ -270,7 +291,7 @@
         );
         ring.rotation.x = -Math.PI/2; scene.add(ring);
 
-        var grid = new THREE.GridHelper(50, 50, 0x0a1520, 0x080e18);
+        var grid = new THREE.GridHelper(30, 30, 0x0a1520, 0x080e18);
         grid.position.y = 0.02; scene.add(grid);
 
         var lightRing = new THREE.Mesh(
@@ -294,15 +315,15 @@
         // 东方明珠
         try { (function(){
             var g = new THREE.Group(); g.position.set(-8, 0, -5);
-            var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.4, 8, 12), M(0x888899,0,0,0.4,0.4));
+            var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.4, 8, 8), M(0x888899,0,0,0.4,0.4));
             pole.position.set(0,4,0); g.add(pole);
-            var s1 = new THREE.Mesh(new THREE.SphereGeometry(1.1, 20, 20), M(0x2040a0,0x1030cc,0.6,0.5,0.2,true,0.8));
+            var s1 = new THREE.Mesh(new THREE.SphereGeometry(1.1, 16, 16), M(0x2040a0,0x1030cc,0.6,0.5,0.2,true,0.8));
             s1.position.set(0, 3.5, 0); g.add(s1);
-            var s2 = new THREE.Mesh(new THREE.SphereGeometry(0.8, 20, 20), M(0x3050c0,0x2040dd,0.5,0.5,0.2,true,0.8));
+            var s2 = new THREE.Mesh(new THREE.SphereGeometry(0.8, 16, 16), M(0x3050c0,0x2040dd,0.5,0.5,0.2,true,0.8));
             s2.position.set(0, 6.5, 0); g.add(s2);
-            var s3 = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 12), M(0xffaa33,0xff8800,0.6,0.7,0.2));
+            var s3 = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 8), M(0xffaa33,0xff8800,0.6,0.7,0.2));
             s3.position.set(0, 9, 0); g.add(s3);
-            var antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.5, 6), M(0x999999));
+            var antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.5, 5), M(0x999999));
             antenna.position.set(0, 10.75, 0); g.add(antenna);
             var topRed = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), M(0xff2222,0xff0000,1,0.5,0.3));
             topRed.position.set(0, 12, 0); g.add(topRed);
@@ -429,11 +450,134 @@
             '中国光伏产业链完整度全球领先 | 多晶硅产量占全球 80%+',
             '数据来源：国家能源局');
 
+        // ---- 跨海大桥 ----
+        (function(){
+            var g = new THREE.Group();
+            // 桥面
+            var deck = new THREE.Mesh(new THREE.BoxGeometry(14, 0.2, 1.8), M(0x888888, 0, 0, 0.5, 0.6));
+            deck.position.set(-12, 4, 6); g.add(deck);
+            // 桥墩
+            for(var i=0;i<5;i++){
+                var pier = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 4, 8), M(0x999999, 0, 0, 0.4, 0.6));
+                pier.position.set(-16+i*3, 2, 6); g.add(pier);
+            }
+            // 索塔
+            var tower = new THREE.Mesh(new THREE.BoxGeometry(0.4, 6, 0.6), M(0xcccccc, 0, 0, 0.5, 0.5));
+            tower.position.set(-12, 6, 6); g.add(tower);
+            // 斜拉索
+            for(var i=0;i<6;i++){
+                var cable = new THREE.Mesh(new THREE.BoxGeometry(0.03, 2.5, 0.03), M(0xdddddd));
+                cable.position.set(-12, 6.5, 6-1.5+i*0.6);
+                cable.rotation.x = (i<3?-1:1)*0.3; g.add(cable);
+            }
+            // 桥面灯光
+            for(var i=0;i<8;i++){
+                var bl = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), M(0x3b82f6, 0x2266cc, 0.8, 0.3, 0.3));
+                bl.position.set(-15.5+i*2, 4.2, 6.8); g.add(bl);
+            }
+            addIO(g, '港珠澳大桥',
+                '全长 55 公里 | 世界最长跨海大桥 | 集桥、岛、隧于一体',
+                '数据来源：交通运输部');
+            scene.add(g);
+        })();
+
+        // ---- 卫星地面站 ----
+        (function(){
+            var g = new THREE.Group(); g.position.set(-2, 0, 6);
+            // 大锅
+            var dish = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 8, 0, Math.PI*2, 0, Math.PI/3), M(0x667788, 0, 0, 0.5, 0.5));
+            dish.position.y = 2.5; dish.rotation.x = -0.6; g.add(dish);
+            // 支架
+            var leg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2, 4), M(0x999999));
+            leg1.position.set(0.5, 1.5, 0.8); leg1.rotation.x = 0.3; g.add(leg1);
+            // 底座
+            var base2 = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.8, 0.4, 8), M(0x777777));
+            base2.position.y = 0.2; g.add(base2);
+            // 雷达旋转动画
+            window._dish = dish;
+            addIO(g, '卫星通信与遥感',
+                '北斗导航：全球组网 | 遥感卫星：超 200 颗在轨 | 高分系列实现全球覆盖',
+                '数据来源：国家航天局');
+            scene.add(g);
+        })();
+
+        // ---- 自动化港口（集装箱）----
+        (function(){
+            var g = new THREE.Group(); g.position.set(4, 0, 5);
+            // 码头地面
+            var dock = new THREE.Mesh(new THREE.BoxGeometry(5, 0.1, 3), M(0x556677));
+            dock.position.y = 0.05; g.add(dock);
+            // 集装箱堆叠
+            var colors = [0xcc4444, 0x4444cc, 0x44aa44, 0xccaa44, 0xcc6644];
+            for(var row=0;row<3;row++){
+                for(var col=0;col<4;col++){
+                    var cx = -1.8+col*1.1;
+                    var cy = 0.3+row*0.6;
+                    var cz = -0.8;
+                    var container = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.5, 0.6), M(colors[(row*4+col)%5], 0, 0, 0.3, 0.7));
+                    container.position.set(cx, cy, cz); g.add(container);
+                }
+            }
+            // 港口吊车
+            var crane = new THREE.Group();
+            var craneTower = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 0.3), M(0xddaa22));
+            craneTower.position.set(2.2, 2.5, 0); crane.add(craneTower);
+            var craneArm = new THREE.Mesh(new THREE.BoxGeometry(3, 0.15, 0.15), M(0xddaa22));
+            craneArm.position.set(0.8, 5, 0); crane.add(craneArm);
+            window._crane = crane;
+            g.add(crane);
+
+            addIO(g, '智慧港口自动化',
+                '自动化码头：全球前十中中国占 7 席 | 年吞吐量超 15 亿 TEU',
+                '数据来源：交通运输部');
+            scene.add(g);
+        })();
+
+        // ---- 大型风电场 ----
+        (function(){
+            var g = new THREE.Group();
+            for(var i=0;i<5;i++){
+                var wg = new THREE.Group();
+                var tw = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, 5, 6), M(0xbbbbbb));
+                tw.position.y = 2.5; wg.add(tw);
+                var bl = new THREE.Group(); bl.position.set(0, 5, 0);
+                for(var b=0;b<3;b++){
+                    var blade = new THREE.Mesh(new THREE.BoxGeometry(0.05, 2.5, 0.03), M(0xeeeeee));
+                    blade.position.set(Math.sin(b*2.09)*1.2, Math.cos(b*2.09)*1.2, 0);
+                    blade.rotation.z = b*2.09; bl.add(blade);
+                }
+                wg.add(bl);
+                wg.position.set(-14+i*1.8, 0, 7+i*0.5);
+                g.add(wg);
+                window._windFarm = window._windFarm || [];
+                window._windFarm.push(bl);
+            }
+            addIO(g, '大型风电场',
+                '风电装机超 4 亿千瓦 | 连续 14 年全球第一 | 海上风电装机全球占比超 50%',
+                '数据来源：国家能源局');
+            scene.add(g);
+        })();
+
+        // ---- 5G 基站 ----
+        (function(){
+            var g = new THREE.Group(); g.position.set(0, 0, -8);
+            var tower2 = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 3.5, 6), M(0x888888));
+            tower2.position.y = 1.75; g.add(tower2);
+            var antenna2 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.8, 0.15), M(0x333333));
+            antenna2.position.set(0, 3.5, 0); g.add(antenna2);
+            var sig = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), M(0x22cc55, 0x11aa44, 1, 0.3, 0.3));
+            sig.position.set(0, 4, 0); g.add(sig); window._sig5g = sig;
+            addIO(g, '5G 通信基站',
+                '基站总数超 350 万个 | 全球占比超 60% | 5G 用户超 8 亿',
+                '数据来源：工业和信息化部');
+            scene.add(g);
+        })();
+
         // ---- 左侧粒子（蓝色科技）----
-        var lpc=200, lpGeo=new THREE.BufferGeometry(), lpPos=new Float32Array(lpc*3);
+        var lpc=300, lpGeo=new THREE.BufferGeometry(), lpPos=new Float32Array(lpc*3);
         for(var i=0;i<lpc;i++){ lpPos[i*3]=-16+Math.random()*18; lpPos[i*3+1]=Math.random()*14; lpPos[i*3+2]=-10+Math.random()*10; }
         lpGeo.setAttribute('position', new THREE.BufferAttribute(lpPos,3));
-        var lp = new THREE.Points(lpGeo, new THREE.PointsMaterial({ color:0x3b82f6, size:0.05, transparent:true, opacity:0.4 }));
+        var lp = new THREE.Points(lpGeo, new THREE.PointsMaterial({ color:0x3b82f6, size:0.06, transparent:true, opacity:0.35 }));
         scene.add(lp);
 
         /* ================================================================
@@ -450,8 +594,8 @@
 
         // 山脉（右侧起伏地形）
         (function(){
-            for(var i=0;i<5;i++){
-                var mtnGeo = new THREE.ConeGeometry(2+Math.random()*2, 3+Math.random()*3, 5+Math.floor(Math.random()*3));
+            for(var i=0;i<8;i++){
+                var mtnGeo = new THREE.ConeGeometry(2+Math.random()*2, 3+Math.random()*3, 5);
                 var mtn = new THREE.Mesh(mtnGeo, M(0x3a4a30, 0, 0, 0.1, 0.9));
                 mtn.position.set(8+i*2, 0, 6+Math.sin(i)*3);
                 mtn.rotation.y = Math.random()*Math.PI;
@@ -596,6 +740,9 @@
         }
         field(13, 4, 4, 3, 0x3a6a28);
         field(15, 7, 3.5, 4, 0x2a5a1a);
+        field(10, 5, 3, 2, 0x2a6a18);
+        field(16, 2, 2.5, 3, 0x3a6a22);
+        field(11, 7, 3, 2.5, 0x2a5a20);
 
         // 树木
         function tree(x, z, s) {
@@ -603,15 +750,19 @@
             var g = new THREE.Group(); g.position.set(x, 0, z);
             var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08*s, 0.12*s, 1.2*s, 6), M(0x553322, 0, 0, 0.05, 0.95));
             trunk.position.set(0, 0.6*s, 0); g.add(trunk);
-            var t1 = new THREE.Mesh(new THREE.SphereGeometry(0.5*s, 8, 8), M(0x2a6a28, 0, 0, 0.05, 0.9));
+            var t1 = new THREE.Mesh(new THREE.SphereGeometry(0.5*s, 6, 6), M(0x2a6a28, 0, 0, 0.05, 0.9));
             t1.position.set(0, 1.5*s, 0); g.add(t1);
-            var t2 = new THREE.Mesh(new THREE.SphereGeometry(0.35*s, 8, 8), M(0x357a30, 0, 0, 0.05, 0.9));
+            var t2 = new THREE.Mesh(new THREE.SphereGeometry(0.35*s, 6, 6), M(0x357a30, 0, 0, 0.05, 0.9));
             t2.position.set(0.15*s, 1.9*s, 0.1*s); g.add(t2);
             rGrp.add(g);
         }
         tree(2, 1, 1); tree(4, 4, 1.2); tree(8, 2, 0.8); tree(11, 3, 1);
         tree(13, 2, 0.9); tree(15, 4, 1.3); tree(16, 1, 0.7); tree(9, 10, 1.1);
         tree(14, 10, 0.8); tree(3, 6, 1); tree(6, 10, 0.9); tree(17, 6, 1); tree(5, 5, 1);
+        tree(1, 7, 0.8); tree(10, 7, 1); tree(0, 3, 0.9); tree(18, 8, 0.7);
+        tree(6, 5, 1.1); tree(11, 8, 0.8); tree(4, 9, 1); tree(16, 5, 0.9);
+        tree(7, 3, 0.7); tree(15, 9, 1.2); tree(3, 10, 0.8); tree(12, 1, 0.9);
+        tree(9, 5, 1); tree(13, 7, 0.7); tree(8, 8, 1.1); tree(2, 5, 0.8);
 
         // 水面（小河）
         var water = new THREE.Mesh(
@@ -620,11 +771,185 @@
         );
         water.rotation.x = -Math.PI/2; water.position.set(8, 0.04, -2); scene.add(water);
 
+        // ---- 村口大榕树 ----
+        (function(){
+            var g = new THREE.Group(); g.position.set(1, 0, -1);
+            var trunk2 = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.25, 3, 8), M(0x443322));
+            trunk2.position.y = 1.5; g.add(trunk2);
+            var canopy = new THREE.Mesh(new THREE.SphereGeometry(1.8, 8, 6), M(0x1a5a18, 0, 0, 0.05, 0.95));
+            canopy.position.y = 3.5; g.add(canopy);
+            // 气生根
+            for(var i=0;i<4;i++){
+                var root = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2, 4), M(0x554433));
+                root.position.set(-0.8+i*0.5, 2, 0.3); g.add(root);
+            }
+            // 树下石凳
+            var bench = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.3, 0.4), M(0x666666));
+            bench.position.set(1.5, 0.15, 0.3); g.add(bench);
+            addIO(g, '传统村落文化',
+                '古树名木：约 100 万株 | 传统村落：超 8000 个受保护 | 乡村文化传承',
+                '数据来源：住房和城乡建设部');
+            rGrp.add(g);
+        })();
+
+        // ---- 村委会广场 ----
+        (function(){
+            var g = new THREE.Group(); g.position.set(6, 0, 1);
+            // 广场地面
+            var sq = new THREE.Mesh(new THREE.PlaneGeometry(4, 3), M(0x666666, 0, 0, 0.1, 0.9));
+            sq.rotation.x = -Math.PI/2; sq.position.y = 0.02; g.add(sq);
+            // 宣传栏
+            var board = new THREE.Mesh(new THREE.BoxGeometry(2, 1.2, 0.15), M(0x224488, 0x113366, 0.2));
+            board.position.set(0, 1, -1.4); g.add(board);
+            var boardLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.4, 4), M(0x888888));
+            boardLeg.position.set(0.8, 0.7, -1.4); g.add(boardLeg);
+            var boardLeg2 = boardLeg.clone(); boardLeg2.position.x = -0.8; g.add(boardLeg2);
+            // 旗杆
+            var fp = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 3.5, 6), M(0xaaaaaa));
+            fp.position.set(-1.5, 1.75, 0); g.add(fp);
+            // 红旗
+            var pf = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.38), M(0xcc2222, 0xcc1111, 0.3, 0.3, 0.4, true, 0.9));
+            pf.position.set(-1.2, 3.1, 0); g.add(pf); window._pf = pf;
+            addIO(g, '乡村振兴成果',
+                '脱贫人口：近 1 亿人 | 2832 个贫困县全部摘帽 | 乡村振兴全面推进',
+                '数据来源：国务院扶贫办');
+            rGrp.add(g);
+        })();
+
+        // ---- 水利灌溉工程 ----
+        (function(){
+            var g = new THREE.Group(); g.position.set(16, 0, -1);
+            // 水渠
+            var canal = new THREE.Mesh(new THREE.BoxGeometry(6, 0.15, 0.6), M(0x224466, 0, 0, 0.3, 0.7));
+            canal.position.y = 0.08; g.add(canal);
+            // 水泵站
+            var pump = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 1.2, 8), M(0x778899));
+            pump.position.y = 0.6; g.add(pump);
+            // 管道
+            var pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2, 6), M(0x999999));
+            pipe.rotation.z = Math.PI/2; pipe.position.set(1.2, 0.5, 0); g.add(pipe);
+            // 水花效果
+            var splash = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), M(0x88bbff, 0x4488cc, 0.5, 0.3, 0.2, true, 0.5));
+            splash.position.set(2.3, 0.3, 0); g.add(splash); window._splash = splash;
+            addIO(g, '农村饮水安全工程',
+                '农村自来水普及率超 90% | 水利设施覆盖 4.4 亿农村人口',
+                '数据来源：水利部');
+            rGrp.add(g);
+        })();
+
+        // ---- 乡村电商服务站 ----
+        (function(){
+            var g = new THREE.Group(); g.position.set(5, 0, -3);
+            var eshop = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2, 2), M(0x3366aa, 0x1144aa, 0.1, 0.4, 0.5));
+            eshop.position.y = 1; g.add(eshop);
+            var eshopRoof = new THREE.Mesh(new THREE.ConeGeometry(1.8, 0.8, 4), M(0x4455aa));
+            eshopRoof.position.y = 2.4; eshopRoof.rotation.y = Math.PI/4; g.add(eshopRoof);
+            // 招牌
+            var sign = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 0.06), M(0xffcc00, 0xffaa00, 0.5, 0.5, 0.3));
+            sign.position.set(0, 2, 1.02); g.add(sign);
+            // 快递包裹
+            var pkg = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.2), M(0xcc9944));
+            pkg.position.set(1.3, 0.1, 1.2); g.add(pkg);
+            var pkg2 = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 0.2), M(0xcc6644));
+            pkg2.position.set(1.3, 0.1, 0.9); g.add(pkg2);
+            addIO(g, '农村电商发展',
+                '农村网民规模超 3 亿 | 农产品网络零售额超 6000 亿元 | 快递进村覆盖率超 90%',
+                '数据来源：商务部、农业农村部');
+            rGrp.add(g);
+        })();
+
+        // ---- 放牧牛羊 ----
+        (function(){
+            var g = new THREE.Group();
+            for(var i=0;i<6;i++){
+                var animal = new THREE.Group();
+                var body3 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.2), M(i%2===0?0xddddcc:0xccddcc));
+                body3.position.y = 0.4; animal.add(body3);
+                var head3 = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.15), M(i%2===0?0xddddcc:0xccddcc));
+                head3.position.set(0.2, 0.6, 0); animal.add(head3);
+                // 腿
+                for(var l=0;l<4;l++){
+                    var leg2 = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.3, 4), M(i%2===0?0xbbbbaa:0xbbaabb));
+                    leg2.position.set(-0.12+0.08*l, 0.15, -0.06+l*0.04); animal.add(leg2);
+                }
+                animal.position.set(14+i*0.8, 0, 8+i*0.3);
+                animal.rotation.y = Math.random()*Math.PI;
+                g.add(animal);
+            }
+            addIO(g, '畜牧业发展',
+                '肉类总产量超 9200 万吨 | 牛羊存栏量持续增长 | 畜牧产业助力乡村振兴',
+                '数据来源：农业农村部');
+            rGrp.add(g);
+            window._herd = g;
+        })();
+
+        // ---- 小卖部（乡村商店）----
+        (function(){
+            var g = new THREE.Group(); g.position.set(8, 0, -2);
+            var shop = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2, 2), M(0x887766, 0, 0, 0.1, 0.9));
+            shop.position.y = 1; g.add(shop);
+            // 遮阳棚
+            var awning = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.05, 1.2), M(0xcc6644, 0xaa4422, 0.2));
+            awning.position.set(0, 2.1, 0.5); g.add(awning);
+            // 招牌
+            var shopSign = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.3, 0.05), M(0xff4444, 0xdd2222, 0.4));
+            shopSign.position.set(0, 2.3, 1.02); g.add(shopSign);
+            // 窗户
+            var sw = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.04), M(0x88bbdd, 0, 0, 0.2, 0.2, true, 0.4));
+            sw.position.set(-0.6, 1.3, 1.02); g.add(sw);
+            // 门
+            var sd = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.2, 0.04), M(0x553322));
+            sd.position.set(0.3, 0.6, 1.02); g.add(sd);
+            addIO(g, '乡村商业服务',
+                '村级综合服务站点超 30 万个 | 农村商业体系不断完善',
+                '数据来源：商务部');
+            rGrp.add(g);
+        })();
+
+        // ---- 土坯房（更简陋的住房）----
+        (function(){
+            var g = new THREE.Group(); g.position.set(2, 0, -4);
+            var mudWall = new THREE.Mesh(new THREE.BoxGeometry(2, 1.8, 1.8), M(0x887744, 0, 0, 0.05, 1));
+            mudWall.position.y = 0.9; g.add(mudWall);
+            // 茅草屋顶
+            var thatch = new THREE.Mesh(new THREE.ConeGeometry(1.6, 0.8, 4), M(0x665533, 0, 0, 0.05, 1));
+            thatch.position.y = 2.2; thatch.rotation.y = Math.PI/4; g.add(thatch);
+            // 小窗
+            var mw = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.04), M(0x8899aa, 0, 0, 0.1, 0.3, true, 0.3));
+            mw.position.set(0, 1.1, 0.92); g.add(mw);
+            addIO(g, '农村危房改造',
+                '累计改造农村危房超 2000 万户 | 住房安全有保障 | 乡村建设持续推进',
+                '数据来源：住房和城乡建设部');
+            rGrp.add(g);
+        })();
+
+        // ---- 太阳能热水器（农村）----
+        (function(){
+            var g = new THREE.Group(); g.position.set(15, 0, 2);
+            // 支架
+            var stand = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.8, 0.1), M(0x999999));
+            stand.position.set(0.5, 0.9, 0); g.add(stand);
+            var stand2 = stand.clone(); stand2.position.x = -0.5; g.add(stand2);
+            // 水箱
+            var tank = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 1.2, 8), M(0x4466aa, 0x2244aa, 0.2));
+            tank.rotation.z = Math.PI/2; tank.position.set(0, 2, 0); g.add(tank);
+            // 集热管
+            for(var i=0;i<5;i++){
+                var tube2 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.5, 6), M(0x334455, 0x223344, 0.1));
+                tube2.position.set(-0.3+i*0.15, 1.2, 0.3);
+                tube2.rotation.x = 0.5; g.add(tube2);
+            }
+            addIO(g, '农村清洁能源',
+                '农村户用沼气池超 3000 万口 | 太阳能热水器普及率持续提升 | 清洁能源助力低碳乡村',
+                '数据来源：农业农村部');
+            rGrp.add(g);
+        })();
+
         // 右侧粒子（暖色）
-        var rpc = 100, rpGeo = new THREE.BufferGeometry(), rpPos = new Float32Array(rpc*3);
+        var rpc = 200, rpGeo = new THREE.BufferGeometry(), rpPos = new Float32Array(rpc*3);
         for(var i=0;i<rpc;i++){ rpPos[i*3]=2+Math.random()*16; rpPos[i*3+1]=Math.random()*6; rpPos[i*3+2]=-2+Math.random()*14; }
         rpGeo.setAttribute('position', new THREE.BufferAttribute(rpPos, 3));
-        var rp = new THREE.Points(rpGeo, new THREE.PointsMaterial({ color:0xd4944a, size:0.05, transparent:true, opacity:0.2 }));
+        var rp = new THREE.Points(rpGeo, new THREE.PointsMaterial({ color:0xd4944a, size:0.06, transparent:true, opacity:0.2 }));
         scene.add(rp);
 
         /* ================================================================
@@ -736,6 +1061,36 @@
                 b.rotation.z = t*(1.5+i*0.3);
             });
 
+            // 大型风电场
+            if(window._windFarm){
+                window._windFarm.forEach(function(b, i){
+                    b.rotation.z = t*(2+i*0.2);
+                });
+            }
+
+            // 5G 基站信号脉冲
+            if(window._sig5g){
+                var s = 1+Math.sin(t*3)*0.5;
+                window._sig5g.scale.set(s, s, s);
+            }
+
+            // 水花效果
+            if(window._splash){
+                window._splash.position.y = 0.3+Math.abs(Math.sin(t*2))*0.3;
+                window._splash.scale.set(1+Math.sin(t*2)*0.3, 1+Math.sin(t*2)*0.3, 1);
+            }
+
+            // 村委会红旗飘动
+            if(window._pf) window._pf.rotation.y = Math.sin(t*2.5)*0.15;
+
+            // 放牧牛羊轻微移动
+            if(window._herd){
+                window._herd.children.forEach(function(animal, i){
+                    animal.position.x += Math.sin(t*0.5+i)*0.001;
+                    animal.position.z += Math.cos(t*0.3+i*0.7)*0.0005;
+                });
+            }
+
             // 红旗飘动
             if(window._flag) window._flag.rotation.y = Math.sin(t*3)*0.2;
 
@@ -813,6 +1168,52 @@
                 sunLight.intensity = 0.8;
                 scene.fog = new THREE.FogExp2(0x050810, 0.01);
             }
+        });
+
+        /* ================================================================
+         *  13. 移动端面板折叠逻辑
+         * ================================================================ */
+        var panelAchieve = document.getElementById('panel-achieve');
+        var panelReality = document.getElementById('panel-reality');
+        var tagAchieve = document.querySelector('.scene-tag.achieve');
+        var tagReality = document.querySelector('.scene-tag.reality');
+        var activePanel = null;
+
+        function togglePanel(panel, tag, otherPanel, otherTag) {
+            var isOpen = panel.classList.contains('expanded');
+            // Close all panels first
+            panelAchieve.classList.remove('expanded');
+            panelReality.classList.remove('expanded');
+            tagAchieve.classList.remove('expanded');
+            tagReality.classList.remove('expanded');
+            activePanel = null;
+            // If the clicked panel wasn't open, open it now
+            if (!isOpen) {
+                panel.classList.add('expanded');
+                tag.classList.add('expanded');
+                activePanel = panel;
+            }
+        }
+
+        tagAchieve.addEventListener('click', function() {
+            togglePanel(panelAchieve, tagAchieve, panelReality, tagReality);
+        });
+        tagReality.addEventListener('click', function() {
+            togglePanel(panelReality, tagReality, panelAchieve, tagAchieve);
+        });
+
+        // Click on canvas to close all panels
+        cvs.addEventListener('click', function() {
+            panelAchieve.classList.remove('expanded');
+            panelReality.classList.remove('expanded');
+            tagAchieve.classList.remove('expanded');
+            tagReality.classList.remove('expanded');
+            activePanel = null;
+        });
+
+        // 双击重置视角
+        cvs.addEventListener('dblclick', function() {
+            mr.th = 0; mr.ph = Math.PI/3; mr.d = 22;
         });
 
         hideL();

@@ -203,7 +203,9 @@
 
 <!-- 控件 -->
 <div id="controls">
-    <button class="ctrl-btn" id="btn-reset">重置视角</button>
+    <button class="ctrl-btn" id="btn-zoom-in">＋</button>
+    <button class="ctrl-btn" id="btn-zoom-out">－</button>
+    <button class="ctrl-btn" id="btn-reset">重置</button>
     <button class="ctrl-btn" id="btn-auto">自动旋转</button>
     <button class="ctrl-btn" id="btn-night">夜间模式</button>
 </div>
@@ -1149,6 +1151,14 @@
         // 重置视角
         document.getElementById('btn-reset').addEventListener('click', function(){
             mr.th = 0; mr.ph = Math.PI/3; mr.d = 22;
+        });
+
+        // 缩放按钮
+        document.getElementById('btn-zoom-in').addEventListener('click', function(){
+            mr.d = Math.max(8, mr.d - 3);
+        });
+        document.getElementById('btn-zoom-out').addEventListener('click', function(){
+            mr.d = Math.min(55, mr.d + 3);
         });
 
         // 自动旋转
